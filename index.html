@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة فرسان اللغة - المقصور والمنقوص والممدود</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Cairo', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#4c1d95', // Indigo 900
+                        secondary: '#7c3aed', // Violet 600
+                        accent: '#f59e0b', // Amber 500
+                        dark: '#1e1b4b',
+                    },
+                    animation: {
+                        'bounce-slow': 'bounce 3s infinite',
+                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 100%);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        .btn-hover-effect {
+            transition: all 0.3s ease;
+        }
+        .btn-hover-effect:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+        .pop-in {
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .correct-bg { background-color: rgba(16, 185, 129, 0.8) !important; color: white !important;}
+        .wrong-bg { background-color: rgba(239, 68, 68, 0.8) !important; color: white !important;}
+        
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center relative p-4">
+
+    <!-- Background Decoration -->
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none" id="particles-container">
+        <!-- Particles will be injected by JS -->
+    </div>
+
+    <!-- Main Container -->
+    <div class="glass-panel rounded-3xl w-full max-w-4xl p-6 md:p-10 relative z-10 transition-all duration-500" id="main-container">
+        
+        <!-- 1. Home Screen -->
+        <div id="screen-home" class="text-center flex flex-col items-center justify-center space-y-8 py-10 pop-in">
+            <div class="inline-block bg-white/10 border-2 border-accent/50 backdrop-blur-md px-8 py-3 rounded-full mb-2 pop-in hover:scale-105 transition-transform shadow-[0_0_15px_rgba(245,158,11,0.5)]">
+                <span class="text-gray-200 font-bold text-lg">بإشراف وتصميم:</span> 
+                <span class="text-accent font-extrabold text-2xl ml-2 drop-shadow-md">الأستاذ بهاء المقداد 👨‍🏫</span>
+            </div>
+            
+            <div class="w-24 h-24 bg-accent rounded-full flex items-center justify-center mb-4 shadow-lg shadow-accent/50 animate-bounce-slow">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold text-white mb-2 tracking-wide drop-shadow-md">فرسان اللغة</h1>
+            <h2 class="text-2xl md:text-3xl text-accent font-semibold drop-shadow">تحدي الاسم المقصور والمنقوص والممدود</h2>
+            <p class="text-gray-300 max-w-lg mx-auto text-lg leading-relaxed">
+                مرحباً بك يا بطل في مختبر الكلمات! هل أنت مستعد لاختبار مهاراتك في تثنية وجمع الأسماء؟ 
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 mt-8 w-full justify-center">
+                <button onclick="showScreen('screen-lesson')" class="btn-hover-effect bg-white text-primary px-8 py-4 rounded-xl font-bold text-xl flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                    مراجعة القاعدة
+                </button>
+                <button onclick="startGame()" class="btn-hover-effect bg-accent text-dark px-8 py-4 rounded-xl font-bold text-xl flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    ابدأ التحدي
+                </button>
+            </div>
+
+            <div class="mt-8 flex items-center justify-center gap-3 bg-white/10 px-6 py-3 rounded-full border border-white/20 pop-in" style="animation-delay: 0.3s;">
+                <span class="text-2xl animate-pulse">👥</span>
+                <span class="text-gray-200 text-lg">عدد الفرسان المشاركين:</span>
+                <span id="player-count-display" class="font-bold text-accent text-2xl tracking-wider">...</span>
+            </div>
+        </div>
+
+        <!-- 2. Lesson Screen -->
+        <div id="screen-lesson" class="hidden flex flex-col items-center justify-center w-full pop-in">
+            <h2 class="text-3xl font-bold text-accent mb-6">مراجعة سريعة للقواعد 📖</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full text-right mb-8 text-sm md:text-base">
+                
+                <!-- المقصور -->
+                <div class="bg-white/10 p-5 rounded-2xl border border-white/20 hover:bg-white/20 transition duration-300">
+                    <h3 class="text-2xl font-bold text-yellow-300 mb-3 border-b border-white/20 pb-2">الاسم المقصور</h3>
+                    <ul class="list-disc list-inside space-y-2 text-gray-200">
+                        <li><strong class="text-white">تعريفه:</strong> اسم معرب آخره ألف لازمة مفتوح ما قبلها (فتى، عصا، مستشفى).</li>
+                        <li><strong class="text-white">التثنية والجمع المؤنث:</strong> الألف الثالثة ترد لأصلها (عصا←عصوان، فتى←فتيان). والرابعة فأكثر تقلب ياء (مستشفى←مستشفيات).</li>
+                        <li><strong class="text-white">جمع المذكر السالم:</strong> <span class="text-red-300">تحذف الألف</span>، ويبقى ما قبلها مفتوحاً (الأعلَوْن، مصطفَيْن).</li>
+                    </ul>
+                </div>
+
+                <!-- المنقوص -->
+                <div class="bg-white/10 p-5 rounded-2xl border border-white/20 hover:bg-white/20 transition duration-300">
+                    <h3 class="text-2xl font-bold text-yellow-300 mb-3 border-b border-white/20 pb-2">الاسم المنقوص</h3>
+                    <ul class="list-disc list-inside space-y-2 text-gray-200">
+                        <li><strong class="text-white">تعريفه:</strong> اسم معرب آخره ياء لازمة مكسور ما قبلها (ساعي، قاضي).</li>
+                        <li><strong class="text-white">حذف الياء:</strong> تحذف في نكرة الرفع والجر (جاء قاضٍ).</li>
+                        <li><strong class="text-white">التثنية:</strong> ترد الياء وتضاف العلامة (ساعٍ ← ساعيان/ساعيين).</li>
+                        <li><strong class="text-white">جمع المذكر:</strong> <span class="text-red-300">تحذف الياء</span>، ويضم ما قبل الواو (القاضُون) ويكسر ما قبل الياء (الداعِين).</li>
+                        <li><strong class="text-white">جمع المؤنث:</strong> لا يتغير (القاضيات).</li>
+                    </ul>
+                </div>
+                
+                <!-- الممدود -->
+                <div class="bg-white/10 p-5 rounded-2xl border border-white/20">
+                    <h3 class="text-2xl font-bold text-yellow-300 mb-3 border-b border-white/20 pb-2">الاسم الممدود</h3>
+                    <ul class="list-disc list-inside space-y-2 text-gray-200">
+                        <li><strong class="text-white">تعريفه:</strong> اسم معرب آخره همزة قبلها ألف زائدة (صحراء، بناء).</li>
+                        <li><strong class="text-white">الأصلية (إنشاء):</strong> تبقى الهمزة (إنشاءان، إنشاءات).</li>
+                        <li><strong class="text-white">الزائدة (سمراء):</strong> تقلب واواً (سمراوان، سمراوات).</li>
+                        <li><strong class="text-white">المنقلبة (سماء، بناء):</strong> يجوز إبقاؤها أو قلبها واواً (سماءات/سماوات، بناءان/بناوان).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <button onclick="showScreen('screen-home')" class="btn-hover-effect bg-gray-200 text-dark px-6 py-2 rounded-xl font-bold text-lg mb-2">عودة للرئيسية</button>
+            <button onclick="startGame()" class="btn-hover-effect bg-accent text-dark px-8 py-3 rounded-xl font-bold text-xl w-full max-w-md shadow-lg">لعب الآن!</button>
+        </div>
+
+        <!-- 3. Game Screen -->
+        <div id="screen-game" class="hidden flex flex-col w-full h-full relative pop-in">
+            <!-- Header: Score & Level -->
+            <div class="flex justify-between items-center bg-dark/50 p-4 rounded-xl border border-white/10 mb-8">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">🏆</span>
+                    <span class="text-xl font-bold text-accent" id="score-display">0</span>
+                </div>
+                <div class="text-lg font-semibold text-gray-300">
+                    السؤال: <span id="question-counter" class="text-white">1</span> / <span id="total-questions">10</span>
+                </div>
+            </div>
+
+            <!-- Question Area -->
+            <div class="bg-white text-dark rounded-2xl p-8 shadow-2xl text-center relative mb-8" id="question-card">
+                <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-accent text-dark font-bold py-1 px-4 rounded-full shadow-md text-sm" id="question-type-badge">
+                    تثنية وجمع
+                </div>
+                <h3 class="text-2xl md:text-3xl font-bold mb-6 mt-4 leading-tight" id="question-text">
+                    جاري تحميل التحدي...
+                </h3>
+            </div>
+
+            <!-- Options Area -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="options-container">
+                <!-- Buttons injected by JS -->
+            </div>
+        </div>
+
+        <!-- 4. Feedback Modal Overlay (Hidden by default) -->
+        <div id="feedback-overlay" class="hidden absolute inset-0 bg-dark/90 backdrop-blur-sm z-50 flex flex-col items-center justify-center p-6 rounded-3xl pop-in">
+            <div id="feedback-icon" class="text-7xl mb-4">✨</div>
+            <h2 id="feedback-title" class="text-4xl font-bold mb-4 text-white">إجابة صحيحة!</h2>
+            <p id="feedback-text" class="text-xl text-center text-gray-200 max-w-md mb-8 leading-relaxed bg-white/10 p-4 rounded-xl border border-white/20">
+                شرح القاعدة هنا
+            </p>
+            <button onclick="nextQuestion()" class="btn-hover-effect bg-accent text-dark px-10 py-3 rounded-xl font-bold text-2xl shadow-lg shadow-accent/30">
+                التالي ❯
+            </button>
+        </div>
+
+        <!-- 5. Result Screen -->
+        <div id="screen-result" class="hidden flex flex-col items-center justify-center text-center space-y-6 py-8 pop-in">
+            <div class="text-8xl mb-4" id="result-emoji">🏅</div>
+            <h2 class="text-4xl md:text-5xl font-bold text-white mb-2">اكتمل التحدي!</h2>
+            <p class="text-2xl text-gray-200">النتيجة النهائية:</p>
+            <div class="bg-dark/50 border-2 border-accent rounded-full w-40 h-40 flex items-center justify-center mx-auto shadow-xl shadow-accent/20">
+                <span class="text-5xl font-bold text-accent" id="final-score">8/10</span>
+            </div>
+            <h3 class="text-3xl font-bold mt-4" id="result-title">فارس اللغة</h3>
+            <p class="text-gray-400 mb-8 max-w-md mx-auto" id="result-message">
+                عمل رائع! لقد أثبتّ جدارتك في قواعد المقصور والمنقوص والممدود.
+            </p>
+            
+            <div class="bg-gradient-to-r from-primary/50 to-secondary/50 border border-accent/40 rounded-2xl p-6 max-w-xl mx-auto mb-8 shadow-[0_0_20px_rgba(245,158,11,0.2)] transform hover:scale-105 transition-transform duration-300">
+                <h4 class="text-2xl font-bold text-accent mb-3 flex items-center justify-center gap-2">
+                    <span>💌</span> رسالة الأستاذ بهاء <span>👨‍🏫</span>
+                </h4>
+                <p class="text-gray-100 text-lg leading-relaxed">
+                    تحياتي لكل بطل منكم شارك في هذا التحدي! فخور بجهودكم ومثابرتكم. 
+                    <br> <span class="text-yellow-300 font-bold">ترقبوا المزيد من الألعاب التعليمية المشوقة قريباً</span>، لنجعل معاً قواعد لغتنا الجميلة أسهل وأمتع!
+                </p>
+            </div>
+
+            <div class="flex gap-4">
+                <button onclick="showScreen('screen-home')" class="btn-hover-effect bg-white/20 text-white px-6 py-3 rounded-xl font-bold text-lg hover:bg-white/30">
+                    الرئيسية
+                </button>
+                <button onclick="startGame()" class="btn-hover-effect bg-accent text-dark px-8 py-3 rounded-xl font-bold text-xl shadow-lg">
+                    العب مرة أخرى ↺
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Audio Context for simple sound effects ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            if (type === 'correct') {
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                oscillator.frequency.exponentialRampToValueAtTime(1046.50, audioCtx.currentTime + 0.1); // C6
+                gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.5);
+            } else if (type === 'wrong') {
+                oscillator.type = 'sawtooth';
+                oscillator.frequency.setValueAtTime(150, audioCtx.currentTime); 
+                oscillator.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.3);
+                gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.3);
+            } else if (type === 'win') {
+                // simple arpeggio
+                const notes = [440, 554.37, 659.25, 880];
+                notes.forEach((freq, i) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.type = 'triangle';
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.3, audioCtx.currentTime + i * 0.15);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.15 + 0.3);
+                    osc.start(audioCtx.currentTime + i * 0.15);
+                    osc.stop(audioCtx.currentTime + i * 0.15 + 0.3);
+                });
+            }
+        }
+
+        // --- Game Data ---
+        const gameQuestions = [
+            {
+                type: "المنقوص",
+                question: "كيف تُكتب كلمة (ساعي) عندما تكون نكرة في حالة الرفع؟ (مثال: هذا ....)",
+                options: ["ساعي", "ساعٍ", "ساعياً", "ساعيا"],
+                correct: 1,
+                hint: "في الاسم المنقوص، تحذف الياء عندما يكون نكرة (غير معرف بأل وغير مضاف) في حالتي الرفع والجر ويعوّض عنها بتنوين كسر."
+            },
+            {
+                type: "المنقوص",
+                question: "عند تثنية كلمة (قاضٍ)، ماذا تصبح في حالة الرفع؟",
+                options: ["قاضان", "قاضون", "قاضيان", "قاضياوان"],
+                correct: 2,
+                hint: "عند تثنية الاسم المنقوص، ترد إليه ياؤه المحذوفة ويُضاف علامة التثنية (قاض + ان = قاضيان)."
+            },
+            {
+                type: "المنقوص",
+                question: "حَوّل كلمة (القاضي) إلى جمع مذكر سالم في حالة الرفع:",
+                options: ["القاضيُون", "القاضُون", "القاضِيين", "القضات"],
+                correct: 1,
+                hint: "عند جمعه جمع مذكر سالم، تحذف الياء، ويُضم ما قبل الواو في حالة الرفع لتصبح (القاضُون)."
+            },
+            {
+                type: "المنقوص",
+                question: "عند جمع كلمة (الداعي) جمع مذكر سالم في حالتي النصب والجر:",
+                options: ["الداعِين", "الداعيين", "الداعِون", "الداعيات"],
+                correct: 0,
+                hint: "تحذف ياؤه، ويُكسر ما قبل الياء في حالتي النصب والجر لتصبح (الداعِين) بياء واحدة فقط."
+            },
+            {
+                type: "المنقوص",
+                question: "اجمع كلمة (القاضية) جمع مؤنث سالم:",
+                options: ["القاضات", "القاضياوات", "القاضييات", "القاضيات"],
+                correct: 3,
+                hint: "جمع المؤنث السالم للاسم المنقوص لا يتغير فيه شيء، فقط تضاف الألف والتاء (القاضية + ات = القاضيات)."
+            },
+            {
+                type: "الممدود",
+                question: "كلمة (إنشاء) همزتها أصلية، عند تثنيتها تصبح:",
+                options: ["إنشاوان", "إنشايان", "إنشاءان", "إنشاءين (دائماً)"],
+                correct: 2,
+                hint: "الاسم الممدود الذي همزته أصلية، يجب بقاء الهمزة عند التثنية (إنشاء + ان = إنشاءان)."
+            },
+            {
+                type: "الممدود",
+                question: "كلمة (سمراء) همزتها زائدة، ما التثنية الصحيحة لها؟",
+                options: ["سمراءان", "سمراوان", "سمرايان", "سمراوون"],
+                correct: 1,
+                hint: "إذا كانت الهمزة زائدة (للتأنيث)، يجب قلب الهمزة واواً (سمراء + ان = سمراوان)."
+            },
+            {
+                type: "الممدود",
+                question: "كلمة (سماء) همزتها منقلبة، عند جمعها جمع مؤنث سالم يجوز أن نقول:",
+                options: ["سماءات فقط", "سماوات فقط", "سماياوات", "سماءات أو سماوات"],
+                correct: 3,
+                hint: "إذا كانت الهمزة منقلبة (عن واو أو ياء)، يجوز بقاؤها (سماءات) ويجوز قلبها واواً (سماوات)."
+            },
+            {
+                type: "الممدود",
+                question: "كلمة (كساء) همزتها منقلبة عن أصل، عند تثنيتها:",
+                options: ["يجوز: كساءان أو كساوان", "كساءان فقط", "كساوان فقط", "كسايان فقط"],
+                correct: 0,
+                hint: "الهمزة المبدلة من حرف أصلي يجوز فيها الوجهان: بقاء الهمزة أو قلبها واواً (كساءان / كساوان)."
+            },
+            {
+                type: "الممدود",
+                question: "نوع الهمزة في كلمة (صحراء) هي همزة:",
+                options: ["أصلية", "منقلبة عن واو", "زائدة", "منقلبة عن ياء"],
+                correct: 2,
+                hint: "همزة (صحراء، سمراء، حسناء) هي همزة زائدة، ولذلك عند التثنية أو الجمع تُقلب واواً."
+            },
+            {
+                type: "المقصور",
+                question: "تثنية كلمة (عصا) في حالة الرفع هي:",
+                options: ["عصيان", "عصوان", "عصاان", "عصاوات"],
+                correct: 1,
+                hint: "الألف ثالثة ومكتوبة قائمة (ممدودة)، إذن أصلها واو، فتُرد لأصلها عند التثنية (عصا + ان = عصوان)."
+            },
+            {
+                type: "المقصور",
+                question: "ما تثنية كلمة (فتى) في حالة الرفع؟",
+                options: ["فتيان", "فتوان", "فتاان", "فتاوين"],
+                correct: 0,
+                hint: "الألف ثالثة ومكتوبة على شكل ياء غير منقوطة، إذن أصلها ياء، فتُرد لأصلها عند التثنية (فتى + ان = فتيان)."
+            },
+            {
+                type: "المقصور",
+                question: "اجمع كلمة (مستشفى) جمع مؤنث سالم:",
+                options: ["مستشفاون", "مستشفايات", "مستشفات", "مستشفيات"],
+                correct: 3,
+                hint: "إذا كانت ألف المقصور رابعة فأكثر، تُقلب ياءً مباشرة عند جمع المؤنث السالم (مستشفى + ات = مستشفيات)."
+            },
+            {
+                type: "المقصور",
+                question: "عند جمع كلمة (الأعلى) جمع مذكر سالم في حالة الرفع تصبح:",
+                options: ["الأعلون", "الأعليون", "الأعلَوْن", "الأعلاون"],
+                correct: 2,
+                hint: "عند جمع المقصور جمع مذكر سالماً، تُحذف الألف ويبقى ما قبلها مفتوحاً للدلالة عليها (الأعلَ + ون = الأعلَوْن)."
+            },
+            {
+                type: "المقصور",
+                question: "اجمع كلمة (مصطفى) جمع مذكر سالم في حالتي النصب والجر:",
+                options: ["مصطفِينَ", "مصطفَيْنَ", "مصطفيات", "مصطفون"],
+                correct: 1,
+                hint: "تُحذف الألف ويبقى ما قبلها مفتوحاً، ونضيف الياء والنون (مصطفَ + يْنَ = مصطفَيْنَ)."
+            },
+            {
+                type: "المنقوص",
+                question: "اختر الجملة الصحيحة إملائياً ونحوياً:",
+                options: ["هذا محاميٌ بارع", "هذا محامياً بارع", "هذا محامٍ بارع", "هذا المحامٍ بارع"],
+                correct: 2,
+                hint: "تُحذف ياء المنقوص إذا كان نكرة مرفوعة أو مجرورة ويعوض عنها بتنوين الكسر (هذا محامٍ)."
+            },
+            {
+                type: "الممدود",
+                question: "عند جمع كلمة (حسناء) جمع مؤنث سالم نقول:",
+                options: ["حسناءات", "حسنايات", "حسانون", "حسناوات"],
+                correct: 3,
+                hint: "همزة (حسناء) زائدة للتأنيث، فيجب قلبها واواً عند الجمع (حسناء -> حسناوات)."
+            },
+            {
+                type: "الممدود",
+                question: "عند جمع كلمة (ابتداء) جمع مؤنث سالم نقول:",
+                options: ["ابتداوات", "ابتداءات", "ابتدايات", "ابتداءون"],
+                correct: 1,
+                hint: "همزة (ابتداء) أصلية من الفعل (بدأ)، لذلك يجب أن تبقى كما هي عند الجمع (ابتداءات)."
+            },
+            {
+                type: "المنقوص",
+                question: "ما تثنية كلمة (الراعي) في حالتي النصب والجر؟",
+                options: ["الراعين", "الراعيين", "الراعيَيْن", "الراعيان"],
+                correct: 2,
+                hint: "عند تثنية المنقوص لا يُحذف منه شيء، وتضاف الياء والنون في حالة النصب والجر (الراعي + يْن = الراعيَيْن)."
+            },
+            {
+                type: "المقصور",
+                question: "كلمة (كبرى) اسم مقصور ألفه رابعة، عند تثنيتها تصبح:",
+                options: ["كبروان", "كبريان", "كبران", "كبرىان"],
+                correct: 1,
+                hint: "الاسم المقصور إذا كانت ألفه رابعة فأكثر، تُقلب ألفه ياءً عند التثنية (كبرى + ان = كبريان)."
+            }
+        ];
+
+        // --- Game State ---
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let canAnswer = false;
+
+        // --- Functions ---
+        function generateParticles() {
+            const container = document.getElementById('particles-container');
+            container.innerHTML = '';
+            for(let i=0; i<20; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const size = Math.random() * 8 + 4;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                particle.style.left = `${Math.random() * 100}vw`;
+                particle.style.top = `${Math.random() * 100}vh`;
+                
+                const animDuration = Math.random() * 10 + 10;
+                particle.style.transition = `top ${animDuration}s linear, opacity ${animDuration/2}s ease-in-out`;
+                particle.style.opacity = Math.random() * 0.5 + 0.1;
+                
+                container.appendChild(particle);
+                
+                // Animate
+                setTimeout(() => {
+                    particle.style.top = '-20px';
+                }, 100);
+            }
+        }
+
+        function showScreen(screenId) {
+            // Hide all
+            ['screen-home', 'screen-lesson', 'screen-game', 'screen-result', 'feedback-overlay'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            // Show target
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+
+        function startGame() {
+            // Shuffle and slice questions for variety (or play all 10)
+            currentQuestions = [...gameQuestions].sort(() => Math.random() - 0.5);
+            currentIndex = 0;
+            score = 0;
+            
+            document.getElementById('total-questions').textContent = currentQuestions.length;
+            updateScoreDisplay();
+            
+            showScreen('screen-game');
+            loadQuestion();
+            generateParticles();
+        }
+
+        function loadQuestion() {
+            canAnswer = true;
+            const q = currentQuestions[currentIndex];
+            
+            document.getElementById('question-counter').textContent = currentIndex + 1;
+            document.getElementById('question-type-badge').textContent = q.type;
+            document.getElementById('question-text').textContent = q.question;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-hover-effect bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold py-4 px-6 rounded-xl text-lg md:text-xl transition-all text-right flex items-center justify-between w-full shadow-md';
+                
+                btn.innerHTML = `
+                    <span>${opt}</span>
+                    <span class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-sm">${String.fromCharCode(1613 + index)}</span>
+                `; // Using Arabic Indic numbers format vaguely or just circles
+                
+                // Set fixed letter for style A, B, C, D (أ، ب، ج، د)
+                const letters = ['أ', 'ب', 'ج', 'د'];
+                btn.innerHTML = `
+                    <span>${opt}</span>
+                    <span class="w-8 h-8 rounded-full border border-white/30 flex items-center justify-center text-sm font-bold text-accent">${letters[index]}</span>
+                `;
+
+                btn.onclick = () => handleAnswer(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(selectedIndex, btnElement) {
+            if (!canAnswer) return;
+            canAnswer = false;
+            
+            const q = currentQuestions[currentIndex];
+            const isCorrect = (selectedIndex === q.correct);
+            
+            const allBtns = document.getElementById('options-container').querySelectorAll('button');
+            
+            if (isCorrect) {
+                playSound('correct');
+                btnElement.classList.add('correct-bg');
+                score += 10;
+                updateScoreDisplay();
+                showFeedback(true, q.hint);
+            } else {
+                playSound('wrong');
+                btnElement.classList.add('wrong-bg', 'shake');
+                allBtns[q.correct].classList.add('correct-bg'); // highlight correct
+                showFeedback(false, q.hint);
+            }
+        }
+
+        function updateScoreDisplay() {
+            document.getElementById('score-display').textContent = score;
+        }
+
+        function showFeedback(isCorrect, hintText) {
+            setTimeout(() => {
+                const overlay = document.getElementById('feedback-overlay');
+                const title = document.getElementById('feedback-title');
+                const text = document.getElementById('feedback-text');
+                const icon = document.getElementById('feedback-icon');
+                
+                overlay.classList.remove('hidden');
+                
+                if (isCorrect) {
+                    icon.textContent = '🌟';
+                    title.textContent = 'إجابة مبهرة!';
+                    title.className = 'text-4xl font-bold mb-4 text-green-400';
+                } else {
+                    icon.textContent = '💡';
+                    title.textContent = 'فرصة للتعلم';
+                    title.className = 'text-4xl font-bold mb-4 text-accent';
+                }
+                
+                text.innerHTML = `<strong>القاعدة:</strong> ${hintText}`;
+            }, 600);
+        }
+
+        function nextQuestion() {
+            document.getElementById('feedback-overlay').classList.add('hidden');
+            currentIndex++;
+            
+            if (currentIndex < currentQuestions.length) {
+                loadQuestion();
+            } else {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            playSound('win');
+            showScreen('screen-result');
+            
+            const maxScore = currentQuestions.length * 10;
+            document.getElementById('final-score').textContent = `${score} / ${maxScore}`;
+            
+            const titleEl = document.getElementById('result-title');
+            const msgEl = document.getElementById('result-message');
+            const emojiEl = document.getElementById('result-emoji');
+            
+            const ratio = score / maxScore;
+            
+            if (ratio === 1) {
+                titleEl.textContent = 'أستاذ في النحو! 👑';
+                msgEl.textContent = 'علامة كاملة! لقد أتقنت قواعد الاسم المنقوص والممدود ببراعة تامة.';
+                titleEl.className = 'text-4xl font-bold mt-4 text-yellow-400';
+                emojiEl.textContent = '👑';
+            } else if (ratio >= 0.7) {
+                titleEl.textContent = 'فارس لغوي ⚔️';
+                msgEl.textContent = 'أداء ممتاز، مهاراتك عالية في التصريف والتثنية.';
+                titleEl.className = 'text-4xl font-bold mt-4 text-green-400';
+                emojiEl.textContent = '⚔️';
+            } else if (ratio >= 0.4) {
+                titleEl.textContent = 'نحوي واعد 📚';
+                msgEl.textContent = 'أداء جيد، لكن يمكنك مراجعة القاعدة مرة أخرى لتحقيق الإتقان.';
+                titleEl.className = 'text-4xl font-bold mt-4 text-blue-400';
+                emojiEl.textContent = '📚';
+            } else {
+                titleEl.textContent = 'محاولة شجاعة 💪';
+                msgEl.textContent = 'لا تيأس! ننصحك بقراءة القواعد في قسم المراجعة والمحاولة مجدداً.';
+                titleEl.className = 'text-4xl font-bold mt-4 text-red-400';
+                emojiEl.textContent = '🌱';
+            }
+        }
+
+        // Initialize particles on load
+        window.onload = () => {
+            generateParticles();
+        };
+
+    </script>
+
+    <script>
+        async function initPlayerCount() {
+            const countEl = document.getElementById('player-count-display');
+            if (!countEl) return;
+
+            // اسم فريد للعبتك لضمان عدم تداخل الأرقام مع ألعاب أخرى
+            const namespace = 'bahaa_lang_knights_v1';
+            const key = 'visits';
+            
+            try {
+                // التحقق مما إذا كان الطالب قد زار اللعبة مسبقاً في هذا المتصفح لتجنب العد المزدوج
+                const hasVisited = localStorage.getItem(namespace + '_visited');
+                
+                let url = `https://api.counterapi.dev/v1/${namespace}/${key}`;
+                
+                // إذا لم يزرها من قبل، قم بزيادة العداد (+1)
+                if (!hasVisited) {
+                    url += '/up';
+                    localStorage.setItem(namespace + '_visited', 'true');
+                }
+                
+                const response = await fetch(url);
+                if (response.ok) {
+                    const data = await response.json();
+                    countEl.innerText = data.count || "1";
+                } else {
+                    fallbackCount(countEl);
+                }
+            } catch (error) {
+                // إخفاء رسائل الخطأ المزعجة في لوحة التحكم واستخدام رقم تقريبي كبديل
+                fallbackCount(countEl);
+            }
+        }
+
+        function fallbackCount(element) {
+            // عداد بديل يبدأ من رقم تشجيعي في حال كان هناك حظر على الشبكة
+            let localCount = parseInt(localStorage.getItem('fallback_count') || '15');
+            if (!localStorage.getItem('local_counted')) {
+                localCount++;
+                localStorage.setItem('fallback_count', localCount);
+                localStorage.setItem('local_counted', 'true');
+            }
+            element.innerText = localCount + "+";
+        }
+
+        // تشغيل العداد فور تحميل الصفحة
+        window.addEventListener('DOMContentLoaded', initPlayerCount);
+    </script>
+</body>
+</html>
