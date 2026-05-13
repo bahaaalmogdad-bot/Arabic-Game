@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة الأستاذ بهاء المقداد التعليمية</title>
+    <!-- استدعاء خط عربي عصري -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* الإعدادات الأساسية والتصميم الفضائي/العصري */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            /* خلفية متدرجة عصرية */
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        /* تأثير الدوائر المضيئة في الخلفية */
+        .bg-circle {
+            position: fixed;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,255,200,0.2) 0%, rgba(0,0,0,0) 70%);
+            z-index: -1;
+        }
+        .circle1 { width: 600px; height: 600px; top: -200px; right: -200px; }
+        .circle2 { width: 500px; height: 500px; bottom: -150px; left: -150px; background: radial-gradient(circle, rgba(255,100,150,0.15) 0%, rgba(0,0,0,0) 70%); }
+
+        /* ترويسة الموقع */
+        header {
+            text-align: center;
+            margin-top: 50px;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+            padding: 0 20px;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            text-shadow: 0 0 20px rgba(0, 255, 200, 0.5);
+            margin-bottom: 10px;
+        }
+
+        header h1 span {
+            color: #00ffcc;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            color: #b0c4de;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* حاوية الألعاب (الشبكة) */
+        .games-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            width: 90%;
+            max-width: 1100px;
+            padding-bottom: 50px;
+        }
+
+        /* تصميم بطاقة اللعبة (Glassmorphism) */
+        .game-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px 20px;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 1s ease-out forwards;
+            opacity: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* تأخير ظهور البطاقات واحدة تلو الأخرى */
+        .game-card:nth-child(1) { animation-delay: 0.2s; }
+        .game-card:nth-child(2) { animation-delay: 0.4s; }
+        .game-card:nth-child(3) { animation-delay: 0.6s; }
+
+        .game-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 255, 200, 0.2);
+            border: 1px solid rgba(0, 255, 200, 0.3);
+        }
+
+        .game-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            text-shadow: 0 0 15px rgba(255,255,255,0.5);
+        }
+
+        .game-title {
+            font-size: 1.6rem;
+            color: #ffffff;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .game-desc {
+            font-size: 1rem;
+            color: #a9b0c0;
+            margin-bottom: 25px;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+
+        /* أزرار اللعب */
+        .play-btn {
+            display: inline-block;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-active {
+            background: linear-gradient(45deg, #00b09b, #96c93d);
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 176, 155, 0.4);
+        }
+
+        .btn-active:hover {
+            background: linear-gradient(45deg, #96c93d, #00b09b);
+            box-shadow: 0 8px 20px rgba(0, 176, 155, 0.6);
+            transform: scale(1.05);
+        }
+
+        .btn-disabled {
+            background: rgba(255, 255, 255, 0.1);
+            color: #777;
+            cursor: not-allowed;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* تذييل الموقع */
+        footer {
+            margin-top: auto;
+            padding: 20px;
+            text-align: center;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        footer p {
+            color: #8892b0;
+            font-size: 0.9rem;
+        }
+
+        footer span {
+            color: #00ffcc;
+            font-weight: bold;
+        }
+
+        /* حركات الأنيميشن */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* استجابة للهواتف */
+        @media (max-width: 600px) {
+            header h1 { font-size: 2.2rem; }
+            .game-icon { font-size: 3.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- دوائر الخلفية المضيئة -->
+    <div class="bg-circle circle1"></div>
+    <div class="bg-circle circle2"></div>
+
+    <!-- الترويسة -->
+    <header>
+        <h1>منصة <span>الأستاذ بهاء</span> التعليمية</h1>
+        <p>مرحباً بكم يا أبطال! اختاروا التحدي وانطلقوا في رحلة إتقان لغتنا العربية الجميلة بمتعة وإثارة.</p>
+    </header>
+
+    <!-- قائمة الألعاب -->
+    <main class="games-container">
+        
+        <!-- اللعبة الأولى (جاهزة ومربوطة بـ game1.html) -->
+        <div class="game-card">
+            <div class="game-icon">⚔️</div>
+            <h2 class="game-title">فرسان الصف العاشر</h2>
+            <p class="game-desc">تحدي إتقان تثنية وجمع الاسم (المقصور، المنقوص، والممدود).</p>
+            <!-- انتبه: الرابط هنا يؤدي إلى game1.html -->
+            <a href="game1.html" class="play-btn btn-active">العب الآن! 🚀</a>
+        </div>
+
+        <!-- اللعبة الثانية (قيد التطوير) -->
+        <div class="game-card">
+            <div class="game-icon">🧩</div>
+            <h2 class="game-title">أسرار الهمزات</h2>
+            <p class="game-desc">لعبة مشوقة لإتقان كتابة الهمزة المتوسطة والمتطرفة في جميع حالاتها.</p>
+            <a href="#" class="play-btn btn-disabled" onclick="return false;">قريباً... ⏳</a>
+        </div>
+
+        <!-- اللعبة الثالثة (قيد التطوير) -->
+        <div class="game-card">
+            <div class="game-icon">🎯</div>
+            <h2 class="game-title">قناص المشتقات</h2>
+            <p class="game-desc">تحدي استخراج وصياغة اسم الفاعل، اسم المفعول، وصيغ المبالغة.</p>
+            <a href="#" class="play-btn btn-disabled" onclick="return false;">قريباً... ⏳</a>
+        </div>
+
+    </main>
+
+    <!-- تذييل الصفحة -->
+    <footer>
+        <p>أرجو لكم الفائدة والمتعة طلابي الأعزاء | إشراف: <span>الأستاذ بهاء المقداد</span> &copy; 2026</p>
+    </footer>
+
+</body>
+</html>
