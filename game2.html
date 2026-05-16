@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة قاهر الممنوع من الصرف - فرسان اللغة</title>
+    <!-- Tailwind CSS للتصميم السريع -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- استدعاء خط تجوال ليطابق الصفحة الرئيسية -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Tajawal', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#0f2027', 
+                        secondary: '#203a43', 
+                        accent: '#00ffcc',
+                        accentHover: '#00b09b',
+                        dark: '#0f2027',
+                    },
+                    animation: {
+                        'bounce-slow': 'bounce 3s infinite',
+                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* دوائر مضيئة في الخلفية */
+        .bg-circle {
+            position: fixed;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,255,200,0.15) 0%, rgba(0,0,0,0) 70%);
+            z-index: 0;
+            pointer-events: none;
+        }
+        .circle1 { width: 600px; height: 600px; top: -200px; right: -200px; }
+        .circle2 { width: 500px; height: 500px; bottom: -150px; left: -150px; background: radial-gradient(circle, rgba(255,100,150,0.1) 0%, rgba(0,0,0,0) 70%); }
+
+        /* تأثير Glassmorphism */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-hover-effect {
+            transition: all 0.3s ease;
+        }
+        .btn-hover-effect:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+        .pop-in {
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .correct-bg { background: linear-gradient(45deg, #00b09b, #96c93d) !important; color: white !important; border-color: transparent !important;}
+        .wrong-bg { background: linear-gradient(45deg, #cb2d3e, #ef473a) !important; color: white !important; border-color: transparent !important;}
+        
+        .back-home-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .back-home-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+    </style>
+</head>
+<body class="p-4">
+
+    <div class="bg-circle circle1"></div>
+    <div class="bg-circle circle2"></div>
+
+    <a href="index.html" class="back-home-btn">
+        <span>🏠</span> المنصة الرئيسية
+    </a>
+
+    <div class="glass-panel rounded-3xl w-full max-w-4xl p-6 md:p-10 relative z-10 transition-all duration-500" id="main-container">
+        
+        <!-- 1. Home Screen -->
+        <div id="screen-home" class="text-center flex flex-col items-center justify-center space-y-8 py-10 pop-in">
+            
+            <div class="text-6xl mb-4 drop-shadow-[0_0_15px_rgba(0,255,200,0.5)]">🛡️</div>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-2 tracking-wide drop-shadow-md">قاهر الممنوع من الصرف</h1>
+            <h2 class="text-xl md:text-2xl text-accent font-semibold drop-shadow">هل تستطيع ترويض الكلمات المتمردة؟</h2>
+            <p class="text-gray-300 max-w-lg mx-auto text-lg leading-relaxed mt-4">
+                مرحباً بك يا بطل! هناك كلمات ترفض الكسرة والتنوين وتتمرد على قواعد اللغة... مهمتك اليوم هي كشفها ومعرفة متى تُجبر على قبول الكسرة!
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 mt-8 w-full justify-center">
+                <button onclick="showScreen('screen-lesson')" class="btn-hover-effect bg-white/10 border border-white/20 text-white hover:bg-white/20 px-8 py-3 rounded-full font-bold text-lg flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                    مراجعة القاعدة
+                </button>
+                <button onclick="startGame()" class="btn-hover-effect text-dark px-8 py-3 rounded-full font-bold text-lg flex items-center justify-center gap-2 shadow-[0_5px_15px_rgba(0,176,155,0.4)]" style="background: linear-gradient(45deg, #00b09b, #96c93d);">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    ابدأ التحدي
+                </button>
+            </div>
+
+            <div class="mt-8 flex items-center justify-center gap-3 bg-white/5 border border-white/10 px-6 py-3 rounded-full pop-in" style="animation-delay: 0.3s;">
+                <span class="text-xl">🔥</span>
+                <span class="text-gray-300 text-sm md:text-base">عدد قاهري الممنوع من الصرف:</span>
+                <span id="player-count-display" class="font-bold text-accent text-xl tracking-wider">...</span>
+            </div>
+        </div>
+
+        <!-- 2. Lesson Screen -->
+        <div id="screen-lesson" class="hidden flex flex-col items-center justify-center w-full pop-in">
+            <h2 class="text-3xl font-bold text-accent mb-6">مراجعة سريعة للقواعد 📖</h2>
+            
+            <div class="bg-black/30 p-4 rounded-xl border border-accent/30 w-full mb-6 text-center shadow-[0_0_15px_rgba(0,255,200,0.1)]">
+                <p class="text-lg text-white font-bold mb-2">القاعدة الذهبية:</p>
+                <p class="text-gray-300">الممنوع من الصرف اسم يرفض <span class="text-accent font-bold">التنوين</span> تماماً، ويُجر بـ <span class="text-red-400 font-bold">الفتحة</span> عوضاً عن الكسرة.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full text-right mb-8 text-sm md:text-base">
+                
+                <!-- أسماء العلم -->
+                <div class="bg-black/20 p-5 rounded-2xl border border-white/10 hover:border-accent/30 transition duration-300">
+                    <h3 class="text-xl font-bold text-accent mb-3 border-b border-white/10 pb-2">1. أسماء العَلَم</h3>
+                    <ul class="list-disc list-inside space-y-2 text-gray-300">
+                        <li><strong class="text-white">الأعجمي:</strong> +3 حروف (إبراهيم، لندن).</li>
+                        <li><strong class="text-white">المؤنث:</strong> لفظي (حمزة)، معنوي (سعاد)، كلاهما (فاطمة).</li>
+                        <li><strong class="text-white">وزن الفعل:</strong> (أحمد، يزيد).</li>
+                        <li><strong class="text-white">مركب مزجي:</strong> (حضرموت، بعلبك).</li>
+                        <li><strong class="text-white">ألف ونون زائدتين:</strong> (عثمان، عمران).</li>
+                        <li><strong class="text-white">وزن (فُعَل):</strong> (عُمَر، زُحَل).</li>
+                    </ul>
+                </div>
+
+                <!-- الصفات والجموع -->
+                <div class="bg-black/20 p-5 rounded-2xl border border-white/10 hover:border-accent/30 transition duration-300">
+                    <h3 class="text-xl font-bold text-accent mb-3 border-b border-white/10 pb-2">2. الصفات والجموع</h3>
+                    <ul class="list-disc list-inside space-y-2 text-gray-300">
+                        <li><strong class="text-white">وزن (أفعل/فعلاء):</strong> ألوان وعيوب (أحمر/حمراء).</li>
+                        <li><strong class="text-white">وزن (فعلان/فعلى):</strong> (عطشان/عطشى).</li>
+                        <li><strong class="text-white">منتهى الجموع:</strong> بعد الألف حرفان أو 3 أوسطها ساكن (مساجد، مصابيح).</li>
+                        <li><strong class="text-white">ألف مقصورة زائدة:</strong> (كبرى، صغرى).</li>
+                        <li><strong class="text-white">ألف ممدودة زائدة:</strong> (صحراء، علماء).</li>
+                    </ul>
+                </div>
+                
+                <!-- الاستثناء (كسر القاعدة) -->
+                <div class="bg-black/20 p-5 rounded-2xl border border-red-500/30 hover:border-red-400/50 transition duration-300 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-1 rounded-bl-lg font-bold">نقطة الضعف</div>
+                    <h3 class="text-xl font-bold text-red-400 mb-3 border-b border-white/10 pb-2 mt-2">3. متى يُكسر (يُجر بالكسرة)؟</h3>
+                    <p class="text-gray-300 mb-2">يضطر الممنوع من الصرف لقبول الكسرة في حالتين فقط:</p>
+                    <ul class="list-disc list-inside space-y-3 text-gray-300 mt-3">
+                        <li><strong class="text-white">إذا عُرِّف بـ (ال):</strong><br> صليتُ في <span class="text-accent">المساجدِ</span>.</li>
+                        <li><strong class="text-white">إذا أُضيف (جاء بعده مضاف إليه):</strong><br> صليتُ في <span class="text-accent">مساجدِ المدينةِ</span>.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="flex gap-4">
+                <button onclick="showScreen('screen-home')" class="btn-hover-effect bg-white/10 border border-white/20 text-white px-6 py-2 rounded-full font-bold text-lg">رجوع</button>
+                <button onclick="startGame()" class="btn-hover-effect text-dark px-8 py-2 rounded-full font-bold text-lg shadow-[0_5px_15px_rgba(0,176,155,0.4)]" style="background: linear-gradient(45deg, #00b09b, #96c93d);">العب الآن!</button>
+            </div>
+        </div>
+
+        <!-- 3. Game Screen -->
+        <div id="screen-game" class="hidden flex flex-col w-full h-full relative pop-in">
+            <div class="flex justify-between items-center bg-black/30 p-4 rounded-xl border border-white/10 mb-8 backdrop-blur-sm">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">🏆</span>
+                    <span class="text-xl font-bold text-accent" id="score-display">0</span>
+                </div>
+                <div class="text-lg font-semibold text-gray-300">
+                    السؤال: <span id="question-counter" class="text-white font-bold">1</span> / <span id="total-questions">20</span>
+                </div>
+            </div>
+
+            <div class="bg-white/10 border border-white/20 rounded-2xl p-8 shadow-xl text-center relative mb-8 backdrop-blur-md" id="question-card">
+                <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-1 rounded-full text-sm font-bold shadow-md" style="background: linear-gradient(45deg, #00b09b, #96c93d); color: #0f2027;" id="question-type-badge">
+                    نوع القاعدة
+                </div>
+                <h3 class="text-2xl md:text-3xl font-bold text-white mb-4 mt-4 leading-relaxed" id="question-text">
+                    جاري تحميل التحدي...
+                </h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="options-container">
+                <!-- Buttons injected by JS -->
+            </div>
+        </div>
+
+        <!-- 4. Feedback Modal Overlay -->
+        <div id="feedback-overlay" class="hidden absolute inset-0 bg-[#0f2027]/90 backdrop-blur-md z-50 flex flex-col items-center justify-center p-6 rounded-3xl pop-in">
+            <div id="feedback-icon" class="text-7xl mb-4 drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">✨</div>
+            <h2 id="feedback-title" class="text-4xl font-bold mb-4 text-white">إجابة صحيحة!</h2>
+            <div class="bg-black/40 border border-white/10 p-6 rounded-xl max-w-lg w-full mb-8 text-center shadow-lg">
+                <p id="feedback-text" class="text-lg text-gray-200 leading-relaxed">
+                    شرح القاعدة هنا
+                </p>
+            </div>
+            <button onclick="nextQuestion()" class="btn-hover-effect text-dark px-10 py-3 rounded-full font-bold text-xl shadow-[0_5px_15px_rgba(0,176,155,0.4)]" style="background: linear-gradient(45deg, #00b09b, #96c93d);">
+                السؤال التالي ❯
+            </button>
+        </div>
+
+        <!-- 5. Result Screen -->
+        <div id="screen-result" class="hidden flex flex-col items-center justify-center text-center space-y-6 py-8 pop-in">
+            <div class="text-8xl mb-4 drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]" id="result-emoji">🏅</div>
+            <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-2">اكتمل التحدي!</h2>
+            
+            <div class="bg-black/30 border-2 border-accent/50 rounded-full w-40 h-40 flex flex-col items-center justify-center mx-auto shadow-[0_0_30px_rgba(0,255,200,0.2)] mt-6 mb-2">
+                <span class="text-sm text-gray-400 mb-1">النتيجة</span>
+                <span class="text-4xl font-bold text-accent" id="final-score">20/20</span>
+            </div>
+            
+            <h3 class="text-3xl font-bold text-white mt-2" id="result-title">فارس اللغة</h3>
+            <p class="text-gray-300 mb-6 max-w-md mx-auto text-lg" id="result-message">
+                عمل رائع! لقد أثبتّ جدارتك.
+            </p>
+            
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-6 max-w-xl mx-auto mb-8 shadow-lg relative overflow-hidden group">
+                <div class="absolute top-0 left-0 w-full h-1" style="background: linear-gradient(90deg, #00b09b, #00ffcc);"></div>
+                <h4 class="text-xl font-bold text-accent mb-3 flex items-center justify-center gap-2">
+                    <span>💌</span> رسالة الأستاذ بهاء المقداد
+                </h4>
+                <p class="text-gray-200 text-md leading-relaxed">
+                    لقد قهرت الكلمات المتمردة التي ترفض التنوين والكسرة! أنا فخور جداً بذكائك وتركيزك. 
+                    <br> <span class="text-white font-bold mt-2 block">اللغة العربية مليئة بالأسرار، وأنت اليوم أثبتّ أنك تملك مفاتيحها!</span>
+                </p>
+            </div>
+
+            <div class="flex gap-4">
+                <a href="index.html" class="btn-hover-effect bg-white/10 border border-white/20 text-white px-6 py-3 rounded-full font-bold text-lg hover:bg-white/20">
+                    العودة للمنصة
+                </a>
+                <button onclick="startGame()" class="btn-hover-effect text-dark px-8 py-3 rounded-full font-bold text-lg shadow-[0_5px_15px_rgba(0,176,155,0.4)]" style="background: linear-gradient(45deg, #00b09b, #96c93d);">
+                    العب مرة أخرى ↺
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Audio Context for simple sound effects ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            if (type === 'correct') {
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(523.25, audioCtx.currentTime); 
+                oscillator.frequency.exponentialRampToValueAtTime(1046.50, audioCtx.currentTime + 0.1); 
+                gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.5);
+            } else if (type === 'wrong') {
+                oscillator.type = 'sawtooth';
+                oscillator.frequency.setValueAtTime(150, audioCtx.currentTime); 
+                oscillator.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.3);
+                gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.3);
+            } else if (type === 'win') {
+                const notes = [440, 554.37, 659.25, 880];
+                notes.forEach((freq, i) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.type = 'triangle';
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.3, audioCtx.currentTime + i * 0.15);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.15 + 0.3);
+                    osc.start(audioCtx.currentTime + i * 0.15);
+                    osc.stop(audioCtx.currentTime + i * 0.15 + 0.3);
+                });
+            }
+        }
+
+        // --- Game Data (20 Questions - الممنوع من الصرف) ---
+        const gameQuestions = [
+            { type: "القاعدة العامة", question: "ما هي القاعدة الأساسية للاسم الممنوع من الصرف؟", options: ["يُجر بالكسرة وينون", "يُرفع بالواو", "لا يقبل التنوين ويُجر بالفتحة", "يُجر بالياء ولا يُنصب"], correct: 2, hint: "الممنوع من الصرف هو اسم لا يقبل التنوين أبداً، وفي حالة الجر تكون علامته الفتحة عوضاً عن الكسرة." },
+            
+            { type: "أسماء العَلَم", question: "لماذا مُنعت كلمة (إبراهيم) من الصرف؟", options: ["لأنها علم مؤنث", "لأنها علم أعجمي زائد عن 3 حروف", "لأنها علم مركب مزجياً", "لأنها على وزن الفعل"], correct: 1, hint: "إبراهيم، لندن، وإسماعيل هي أسماء علم أعجمية (غير عربية) وتزيد عن ثلاثة أحرف، لذا تُمنع من الصرف." },
+            
+            { type: "أسماء العَلَم", question: "كلمة (حمزة) ممنوعة من الصرف لأنها:", options: ["علم أعجمي", "علم على وزن فُعَل", "علم مؤنث تأنيثاً لفظياً", "علم مختوم بألف ونون"], correct: 2, hint: "(حمزة وطلحة) هي أسماء تدل على مذكر ولكنها تحتوي على تاء التأنيث، فتسمى (مؤنث باللفظ فقط) وتُمنع من الصرف." },
+            
+            { type: "أسماء العَلَم", question: "أي من الأسماء التالية ممنوع من الصرف لأنه (علم على وزن الفعل)؟", options: ["عثمان", "أحمد", "عُمَر", "فاطمة"], correct: 1, hint: "(أحمد ويزيد) أسماء تشبه الأفعال في وزنها (أحمدُ الله / جاء أحمدُ)، ولذلك تُمنع من الصرف." },
+            
+            { type: "أسماء العَلَم", question: "لماذا منعت كلمة (حضرموت) من الصرف؟", options: ["لأنها علم مركب تركيباً مزجياً", "لأنها علم مختوم بألف ونون", "لأنها جمع تكسير", "لأنها علم أعجمي"], correct: 0, hint: "المركب المزجي هو كلمتان امتزجتا فأصبحتا كلمة واحدة لا يمكن فصلها مثل (حضرموت، بعلبك)." },
+            
+            { type: "أسماء العَلَم", question: "أي من الأسماء التالية ممنوع من الصرف لأنه على وزن (فُعَل)؟", options: ["عمران", "أحمر", "عُمَر", "سعاد"], correct: 2, hint: "الأسماء التي تأتي على وزن (فُعَل) مثل عُمَر وزُحَل تُمنع من الصرف." },
+            
+            { type: "الصفات", question: "الصفة الممنوعة من الصرف التي تدل على لون تأتي غالباً على وزن:", options: ["فَعْلان", "فُعَل", "أَفْعَل / فَعْلاء", "مُفْتَعَل"], correct: 2, hint: "الصفات التي تدل على الألوان والعيوب تأتي على وزن (أَفْعَل) ومؤنثها (فَعْلاء) مثل: أحمر/حمراء." },
+            
+            { type: "الصفات", question: "ما سبب منع كلمة (عطشان) من الصرف؟", options: ["صفة على وزن فعلان", "اسم علم منتهي بألف ونون", "صيغة منتهى الجموع", "علم مركب مزجي"], correct: 0, hint: "كلمة (عطشان) هي صفة على وزن (فَعْلان) ومؤنثها (فَعْلَى - عطشى)، لذلك لا تُنوّن." },
+            
+            { type: "صيغة منتهى الجموع", question: "كلمة (مساجد) ممنوعة من الصرف لأنها:", options: ["علم على وزن الفعل", "صيغة منتهى الجموع", "جمع مذكر سالم", "صفة على وزن أفعل"], correct: 1, hint: "صيغة منتهى الجموع هي كل جمع تكسير جاء بعد ألفه حرفان (مثل: مَساجِد) أو ثلاثة أوسطها ساكن (مَصابِيح)." },
+            
+            { type: "صيغة منتهى الجموع", question: "أي من الكلمات التالية تعتبر (صيغة منتهى الجموع)؟", options: ["مُعلمين", "مصابيح", "طالبات", "مسلمون"], correct: 1, hint: "كلمة (مصابيح) جمع تكسير، جاء بعد ألف التكسير ثلاثة أحرف أوسطها ساكن (الياء)، فهي صيغة منتهى الجموع." },
+            
+            { type: "الأسماء المختومة", question: "تُمنع كلمة (صحراء) من الصرف لأنها:", options: ["مختومة بألف التأنيث المقصورة الزائدة", "صفة على وزن فعلاء", "مختومة بألف التأنيث الممدودة الزائدة", "علم مؤنث"], correct: 2, hint: "الاسم المختوم بألف التأنيث الممدودة الزائدة (ألف وهمزة زائدتان وليستا من أصل الكلمة) مثل صحراء وعلماء، يُمنع من الصرف." },
+            
+            { type: "الأسماء المختومة", question: "ما سبب منع كلمة (كبرى) من الصرف؟", options: ["اسم مختوم بألف التأنيث المقصورة الزائدة", "صيغة منتهى الجموع", "علم مؤنث تأنيثاً معنوياً", "صفة على وزن فعلان"], correct: 0, hint: "كلمة (كبرى وصغرى) هي أسماء مختومة بألف التأنيث المقصورة الزائدة، ولذلك تُمنع من الصرف." },
+            
+            { type: "تطبيق الإعراب", question: "اختر الجملة الصحيحة إعرابياً:", options: ["سلّمتُ على إبراهيمٍ", "سلّمتُ على إبراهيمَ", "سلّمتُ على إبراهيمُ", "سلّمتُ على إبراهيماً"], correct: 1, hint: "إبراهيم علم أعجمي (ممنوع من الصرف)، والممنوع من الصرف يُجر وعلامة جره (الفتحة) عوضاً عن الكسرة." },
+            
+            { type: "كسر القاعدة", question: "متى يجر الممنوع من الصرف بـ (الكسرة)؟", options: ["في جميع الحالات", "إذا كان جمع تكسير فقط", "إذا عُرّف بـ (ال) أو أُضيف", "إذا جاء فاعلاً"], correct: 2, hint: "نقطة ضعف الممنوع من الصرف أنه يضطر لقبول الكسرة في حالتين: إذا دَخلت عليه (ال) التعريف، أو جاء بعده مضاف إليه." },
+            
+            { type: "كسر القاعدة", question: "في جملة: (صليتُ في مساجدِ المدينةِ)، لماذا جُرت كلمة (مساجد) بالكسرة رغم أنها صيغة منتهى جموع؟", options: ["لأنها معرفة بـ ال", "لأنها مفعول به", "لأنها أُضيفت إلى ما بعدها (المدينة)", "الجملة خاطئة، يجب أن تكون مساجدَ"], correct: 2, hint: "كلمة (مساجد) أُضيفت إلى كلمة (المدينة)، وعندما يُضاف الممنوع من الصرف فإنه يُجر بالكسرة كباقي الأسماء العادية." },
+            
+            { type: "كسر القاعدة", question: "اختر الجملة الصحيحة:", options: ["أُعجبتُ بالمدارسَ الجميلة", "أُعجبتُ بمدارسَ كثيرة", "أُعجبتُ بمدارسٍ كثيرة", "أُعجبتُ بالمدارساً"], correct: 1, hint: "كلمة (مدارس) صيغة منتهى جموع، تجر بالفتحة (بمدارسَ). أما إذا قلنا (بالمدارسِ) فتجر بالكسرة لدخول (ال)." },
+            
+            { type: "أسماء العَلَم", question: "كلمة (عثمان) ممنوعة من الصرف لأنها:", options: ["علم على وزن الفعل", "علم أعجمي", "علم مختوم بألف ونون زائدتين", "صيغة منتهى الجموع"], correct: 2, hint: "الأسماء التي تنتهي بألف ونون زائدتين (ليستا من أصل الكلمة) مثل: عثمان وعمران، تمنع من الصرف." },
+            
+            { type: "أسماء العَلَم", question: "كلمة (سعاد) ممنوعة من الصرف لأنها:", options: ["مؤنث لفظي ومعنوي", "مؤنث معنوي (يخلو من التاء)", "مؤنث لفظي فقط", "علم أعجمي"], correct: 1, hint: "كلمة (سعاد) تدل على أنثى ولكنها لا تنتهي بتاء مربوطة، لذلك تسمى (مؤنثاً بالمعنى فقط) وتُمنع من الصرف." },
+            
+            { type: "تطبيق الإعراب", question: "ما الضبط الصحيح لكلمة (عمر) في جملة: كان (عمر) خليفةً عادلاً؟", options: ["عمرٌ (تنوين ضم)", "عمرُ (ضمة واحدة)", "عمراً (تنوين فتح)", "عمرٍ (تنوين كسر)"], correct: 1, hint: "الممنوع من الصرف يُرفع بالضمة ولا يقبل التنوين أبداً، فنقول: كان عمرُ (بدون تنوين)." },
+            
+            { type: "تحدي القواعد", question: "أي من الكلمات التالية (تُصرف) وتقبل التنوين؟", options: ["فاطمة", "أحمد", "رَجُل", "مساجد"], correct: 2, hint: "كلمة (رَجُل) اسم عادي ليس فيه أي علة تمنعه من الصرف، لذا يقبل التنوين (رجلٌ، رجلاً، رجلٍ). بينما البقية من عائلة الممنوع من الصرف." }
+        ];
+
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let canAnswer = false;
+
+        function showScreen(screenId) {
+            ['screen-home', 'screen-lesson', 'screen-game', 'screen-result', 'feedback-overlay'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+
+        function startGame() {
+            // خلط الأسئلة
+            currentQuestions = [...gameQuestions].sort(() => 0.5 - Math.random());
+            currentIndex = 0;
+            score = 0;
+            
+            document.getElementById('total-questions').textContent = currentQuestions.length;
+            updateScoreDisplay();
+            showScreen('screen-game');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            canAnswer = true;
+            const q = currentQuestions[currentIndex];
+            
+            document.getElementById('question-counter').textContent = currentIndex + 1;
+            document.getElementById('question-type-badge').textContent = q.type;
+            document.getElementById('question-text').textContent = q.question;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            const letters = ['أ', 'ب', 'ج', 'د'];
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-hover-effect bg-black/30 hover:bg-black/50 border border-white/10 text-white font-semibold py-4 px-6 rounded-xl text-lg transition-all text-right flex items-center justify-between w-full shadow-md';
+                
+                btn.innerHTML = `
+                    <span>${opt}</span>
+                    <span class="w-8 h-8 rounded-full border border-accent/50 flex items-center justify-center text-sm font-bold text-accent bg-black/50">${letters[index]}</span>
+                `;
+
+                btn.onclick = () => handleAnswer(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(selectedIndex, btnElement) {
+            if (!canAnswer) return;
+            canAnswer = false;
+            
+            const q = currentQuestions[currentIndex];
+            const isCorrect = (selectedIndex === q.correct);
+            const allBtns = document.getElementById('options-container').querySelectorAll('button');
+            
+            if (isCorrect) {
+                playSound('correct');
+                btnElement.classList.add('correct-bg');
+                score += 10;
+                updateScoreDisplay();
+                showFeedback(true, q.hint);
+            } else {
+                playSound('wrong');
+                btnElement.classList.add('wrong-bg', 'shake');
+                allBtns[q.correct].classList.add('correct-bg'); 
+                showFeedback(false, q.hint);
+            }
+        }
+
+        function updateScoreDisplay() {
+            document.getElementById('score-display').textContent = score;
+        }
+
+        function showFeedback(isCorrect, hintText) {
+            setTimeout(() => {
+                const overlay = document.getElementById('feedback-overlay');
+                const title = document.getElementById('feedback-title');
+                const text = document.getElementById('feedback-text');
+                const icon = document.getElementById('feedback-icon');
+                
+                overlay.classList.remove('hidden');
+                
+                if (isCorrect) {
+                    icon.textContent = '🌟';
+                    title.textContent = 'إجابة مبهرة!';
+                    title.className = 'text-4xl font-bold mb-4 text-[#00ffcc]';
+                } else {
+                    icon.textContent = '💡';
+                    title.textContent = 'فرصة للتعلم';
+                    title.className = 'text-4xl font-bold mb-4 text-[#ffcc00]';
+                }
+                
+                text.innerHTML = `<strong class="text-white">القاعدة:</strong> ${hintText}`;
+            }, 700);
+        }
+
+        function nextQuestion() {
+            document.getElementById('feedback-overlay').classList.add('hidden');
+            currentIndex++;
+            
+            if (currentIndex < currentQuestions.length) {
+                loadQuestion();
+            } else {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            playSound('win');
+            showScreen('screen-result');
+            
+            const maxScore = currentQuestions.length * 10;
+            document.getElementById('final-score').textContent = `${score} / ${maxScore}`;
+            
+            const titleEl = document.getElementById('result-title');
+            const msgEl = document.getElementById('result-message');
+            const emojiEl = document.getElementById('result-emoji');
+            
+            const ratio = score / maxScore;
+            
+            if (ratio === 1) {
+                titleEl.textContent = 'أستاذ في النحو! 👑';
+                msgEl.textContent = 'علامة كاملة! لقد قهرت الممنوع من الصرف بكل براعة.';
+                titleEl.className = 'text-3xl font-bold mt-2 text-yellow-400';
+                emojiEl.textContent = '👑';
+            } else if (ratio >= 0.7) {
+                titleEl.textContent = 'فارس لغوي ⚔️';
+                msgEl.textContent = 'أداء ممتاز! مهاراتك عالية في كشف الكلمات المتمردة.';
+                titleEl.className = 'text-3xl font-bold mt-2 text-[#00ffcc]';
+                emojiEl.textContent = '⚔️';
+            } else if (ratio >= 0.4) {
+                titleEl.textContent = 'نحوي واعد 📚';
+                msgEl.textContent = 'أداء جيد، لكن الممنوع من الصرف يحتاج لتركيز أكبر، راجع القاعدة مرة أخرى.';
+                titleEl.className = 'text-3xl font-bold mt-2 text-blue-300';
+                emojiEl.textContent = '📚';
+            } else {
+                titleEl.textContent = 'محاولة شجاعة 💪';
+                msgEl.textContent = 'لا تيأس! ننصحك بقراءة القواعد في قسم المراجعة والمحاولة مجدداً لتصبح بطلاً.';
+                titleEl.className = 'text-3xl font-bold mt-2 text-red-400';
+                emojiEl.textContent = '🌱';
+            }
+        }
+
+        // --- Counter API ---
+        async function initPlayerCount() {
+            const countEl = document.getElementById('player-count-display');
+            if (!countEl) return;
+
+            // استخدام مساحة جديدة (v2/diptotes) ليكون العداد منفصلاً عن اللعبة الأولى
+            const namespace = 'bahaa_lang_diptotes_v1';
+            const key = 'visits';
+            
+            try {
+                const hasVisited = localStorage.getItem(namespace + '_visited');
+                let url = `https://api.counterapi.dev/v1/${namespace}/${key}`;
+                
+                if (!hasVisited) {
+                    url += '/up';
+                    localStorage.setItem(namespace + '_visited', 'true');
+                }
+                
+                const response = await fetch(url);
+                if (response.ok) {
+                    const data = await response.json();
+                    countEl.innerText = data.count || "1";
+                } else {
+                    fallbackCount(countEl);
+                }
+            } catch (error) {
+                fallbackCount(countEl);
+            }
+        }
+
+        function fallbackCount(element) {
+            let localCount = parseInt(localStorage.getItem('fallback_count_diptotes') || '10');
+            if (!localStorage.getItem('local_counted_diptotes')) {
+                localCount++;
+                localStorage.setItem('fallback_count_diptotes', localCount);
+                localStorage.setItem('local_counted_diptotes', 'true');
+            }
+            element.innerText = localCount + "+";
+        }
+
+        window.addEventListener('DOMContentLoaded', initPlayerCount);
+    </script>
+</body>
+</html>
