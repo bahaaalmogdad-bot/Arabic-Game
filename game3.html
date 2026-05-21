@@ -49,9 +49,8 @@
     <!-- Main Container -->
     <div class="glass-panel rounded-3xl w-full max-w-5xl p-6 md:p-10 relative z-10 transition-all duration-500" id="main-container">
         
-        <!-- 1. Home Screen -->
+        <!-- 1. Home Screen (مفتوحة مباشرة) -->
         <div id="screen-home" class="text-center flex flex-col items-center justify-center space-y-8 py-10 pop-in">
-            
             
             <div class="text-6xl mb-4 drop-shadow-[0_0_15px_rgba(0,255,200,0.5)]">👁️</div>
             <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-2 tracking-wide drop-shadow-md">الأفعال المتعدية لمفعولين</h1>
@@ -67,10 +66,6 @@
                 <button onclick="startGame()" class="btn-hover-effect text-dark px-8 py-3 rounded-full font-bold text-lg flex items-center justify-center gap-2 shadow-[0_5px_15px_rgba(0,176,155,0.4)]" style="background: linear-gradient(45deg, #00b09b, #96c93d);">
                     ابدأ التحدي
                 </button>
-            </div>
-            
-            <div class="mt-4 text-gray-400 text-sm">
-                مجموع نقاطك التراكمية: <span id="home-total-score" class="font-bold text-accent">0</span> 🏆
             </div>
         </div>
 
@@ -148,8 +143,8 @@
             </div>
             <h3 class="text-3xl font-bold text-white mt-2" id="result-title">خبير الأفعال</h3>
             
-            <div class="bg-white/5 border border-white/10 p-4 rounded-xl mt-4">
-                <p class="text-gray-300 text-lg" id="result-message">جاري الحساب...</p>
+            <div class="bg-white/5 border border-white/10 p-4 rounded-xl mt-4 max-w-lg w-full">
+                <p class="text-gray-300 text-lg" id="result-message">أحسنت! لقد أتممت هذا التحدي بنجاح.</p>
             </div>
             
             <div class="flex gap-4 mt-6">
@@ -187,20 +182,12 @@
             }
         }
 
-    
-
-       window.addEventListener('DOMContentLoaded', () => {
-    if(document.getElementById('home-total-score')) {
-        document.getElementById('home-total-score').textContent = localStorage.getItem('bahaa_total_score') || '0';
-    }
-});
-
-        // --- 20 Questions for "الأفعال المتعدية إلى مفعولين" ---
+        // --- 20 Questions ---
         const gameQuestions = [
             { type: "تحديد المعنى", question: "أي الأفعال الآتية ينصب مفعولين أصلهما مبتدأ وخبر ويفيد (اليقين)؟", options: ["وَجَدَ", "ظَنَّ", "جَعَلَ", "مَنَحَ"], correct: 0, hint: "أفعال اليقين هي: علم، رأى، وجد، درى." },
             { type: "إعراب", question: "ما إعراب كلمة (مُحلقاً) في جملة: رأيتُ العصفورَ محلقاً؟", options: ["مفعول به ثانٍ", "حال منصوبة", "تمييز منصوب", "مفعول لأجله"], correct: 1, hint: "رؤية العصفور بالعين رؤية (بصرية)، والرؤية البصرية تنصب مفعولاً واحداً فقط." },
             { type: "فخ نحوي", question: "في جملة (رأيتُ الصبرَ مفتاحَ الفرج)، تُعرب كلمة (مفتاح):", options: ["حالاً منصوبة", "مفعولاً به أول", "مفعولاً به ثانياً", "نعتاً"], correct: 2, hint: "الصبر لا يُرى بالعين، فهذه رؤية (قلبية) تنصب مفعولين." },
-            { type: "تصنيف الأفعال", question: "عين الفعل الذي ينصب مفعولين **ليس** أصلهما مبتدأ وخبر:", options: ["اتّخذ", "ظَنَّ", "كَسَا", "دَرى"], correct: 2, hint: "تذكر أفعال العطاء والمنع: أعطى، منح، كسا، ألبس." },
+            { type: "تصنيف الأفعال", question: "عين الفعل الذي ينصب مفعولين **ليس** أصلهما مبتدأ وخبر:", options: ["اتّخذ", "ظَنَّ", "كَسَا", "دَرى"], correct: 2, hint: "تذكر أفعال العطاء والمنع: أعطى، منح، كسا." },
             { type: "معاني (جعل)", question: "ما المعنى الذي أفاده الفعل (جعل) في الآية: {وجعلَ الظلماتِ والنورَ}؟", options: ["التحويل (صيّر)", "الرجحان (ظن)", "الخلق والإنشاء", "اليقين"], correct: 2, hint: "هنا جاء بمعنى (خلق)، وفي هذه الحالة ينصب مفعولاً به واحداً." },
             { type: "الضمائر المفعولية", question: "المفعول به الأول في جملة {يَحْسَبُهُمُ الْجَاهِلُ أَغْنِيَاءَ} هو:", options: ["الجاهل", "أغنياء", "الضمير (هم)", "ضمير مستتر"], correct: 2, hint: "قد يتصل بالفعل ضمير متصل يقع في محل نصب مفعول به أول." },
             { type: "تحديد المعنى", question: "الجملة التي احتوت على فعل يفيد (التحويل):", options: ["زعم الكاذبُ الخيالَ حقيقةً", "اتخذَ اللهُ إبراهيمَ خليلاً", "دريتُ الحقَّ منتصراً", "وهبَ اللهُ الإنسانَ عقلاً"], correct: 1, hint: "أفعال التحويل هي: جعل، صيّر، ردّ، اتّخذ." },
@@ -299,14 +286,8 @@
             const maxScore = currentQuestions.length * 10;
             document.getElementById('final-score').textContent = `${score} / ${maxScore}`;
             
-            let currentTotal = parseInt(localStorage.getItem('bahaa_total_score') || '0');
-            currentTotal += score;
-            localStorage.setItem('bahaa_total_score', currentTotal);
-            
-            document.getElementById('home-total-score').textContent = currentTotal;
-
             const msgEl = document.getElementById('result-message');
-            msgEl.innerHTML = `عمل رائع! لقد حصدت <span class="text-accent font-bold">${score}</span> نقطة في هذا التحدي.<br>إجمالي نقاطك التراكمية الآن: <span class="text-accent font-bold text-2xl">${currentTotal}</span> 🏆`;
+            msgEl.innerHTML = `عمل رائع! لقد حصدت <span class="text-accent font-bold">${score}</span> نقطة في هذا التحدي.`;
         }
     </script>
 </body>
