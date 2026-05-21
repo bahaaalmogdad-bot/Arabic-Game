@@ -1,0 +1,662 @@
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محقق الغموض النحوي — تمييز الذات</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Tajawal', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#0f2027',
+                        secondary: '#203a43',
+                        accent: '#00ffcc',
+                        dark: '#0f2027',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        *{
+            box-sizing:border-box;
+            font-family:'Tajawal',sans-serif;
+        }
+
+        body{
+            background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+            min-height:100vh;
+            color:white;
+            overflow-x:hidden;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            padding:20px;
+        }
+
+        .glass-panel{
+            background:rgba(255,255,255,0.05);
+            backdrop-filter:blur(16px);
+            border:1px solid rgba(255,255,255,0.1);
+            box-shadow:0 25px 50px rgba(0,0,0,0.5);
+        }
+
+        .bg-circle{
+            position:fixed;
+            border-radius:50%;
+            background:radial-gradient(circle,rgba(0,255,200,0.12)0%,rgba(0,0,0,0)70%);
+            z-index:-1;
+        }
+
+        .circle1{
+            width:600px;
+            height:600px;
+            top:-200px;
+            right:-200px;
+        }
+
+        .circle2{
+            width:500px;
+            height:500px;
+            bottom:-200px;
+            left:-200px;
+        }
+
+        .btn-hover{
+            transition:all .3s ease;
+        }
+
+        .btn-hover:hover{
+            transform:translateY(-4px) scale(1.02);
+        }
+
+        .pop{
+            animation:pop .5s ease;
+        }
+
+        @keyframes pop{
+            from{
+                opacity:0;
+                transform:scale(.8);
+            }
+            to{
+                opacity:1;
+                transform:scale(1);
+            }
+        }
+
+        .correct{
+            background:linear-gradient(45deg,#00b09b,#96c93d)!important;
+            border:none!important;
+            color:white!important;
+        }
+
+        .wrong{
+            background:linear-gradient(45deg,#cb2d3e,#ef473a)!important;
+            border:none!important;
+            color:white!important;
+        }
+
+        .shake{
+            animation:shake .5s;
+        }
+
+        @keyframes shake{
+            10%,90%{transform:translateX(-2px)}
+            20%,80%{transform:translateX(4px)}
+            30%,50%,70%{transform:translateX(-6px)}
+            40%,60%{transform:translateX(6px)}
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-circle circle1"></div>
+<div class="bg-circle circle2"></div>
+
+<div class="glass-panel rounded-3xl w-full max-w-5xl p-6 md:p-10 relative overflow-hidden">
+
+    <div id="home-screen" class="text-center pop">
+
+        <div class="text-7xl mb-6">🔎</div>
+
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-4">
+            محقق الغموض النحوي
+        </h1>
+
+        <h2 class="text-2xl text-accent font-bold mb-6">
+            مغامرة تمييز الذات
+        </h2>
+
+        <p class="max-w-2xl mx-auto text-lg text-gray-300 leading-loose mb-10">
+            ظهرت في مدينة اللغة العربية كلمات غامضة حيّرت العلماء...
+            مهمتك أيها المحقق أن تكشف الغموض وتحدد “تمييز الذات” قبل أن تبتلع الفوضى مكتبة النحو الكبرى.
+        </p>
+
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <button onclick="showLesson()"
+            class="btn-hover bg-white/10 border border-white/20 px-8 py-3 rounded-full text-lg font-bold">
+                📖 مراجعة القاعدة
+            </button>
+
+            <button onclick="startGame()"
+            class="btn-hover px-8 py-3 rounded-full text-lg font-bold text-dark shadow-xl"
+            style="background:linear-gradient(45deg,#00b09b,#96c93d)">
+                🚀 ابدأ التحقيق
+            </button>
+        </div>
+    </div>
+
+    <div id="lesson-screen" class="hidden pop">
+
+        <h2 class="text-3xl font-bold text-accent mb-8 text-center">
+            📖 مراجعة قاعدة تمييز الذات
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-right">
+
+            <div class="bg-black/20 p-5 rounded-2xl border border-white/10">
+                <h3 class="text-xl font-bold text-accent mb-3">ما هو تمييز الذات؟</h3>
+                <p class="text-gray-300 leading-loose">
+                    اسم نكرة منصوب يأتي لإزالة الغموض عن كلمة واحدة قبله تُسمى المميَّز.
+                </p>
+                <div class="mt-3 bg-white/5 p-3 rounded-xl">
+                    اشتريتُ رطلاً تمراً.
+                </div>
+            </div>
+
+            <div class="bg-black/20 p-5 rounded-2xl border border-white/10">
+                <h3 class="text-xl font-bold text-accent mb-3">بعد المقادير</h3>
+                <ul class="text-gray-300 leading-loose space-y-2">
+                    <li>الوزن: كيلوغرام، رطل</li>
+                    <li>الكيل: لتر، صاع</li>
+                    <li>المساحة: دونم، هكتار</li>
+                </ul>
+            </div>
+
+            <div class="bg-black/20 p-5 rounded-2xl border border-white/10">
+                <h3 class="text-xl font-bold text-accent mb-3">أشباه المقادير</h3>
+                <p class="text-gray-300 leading-loose">
+                    كلمات تدل على مقدار غير ثابت مثل:
+                    حفنة، كأس، سلة، ملعقة.
+                </p>
+            </div>
+
+            <div class="bg-black/20 p-5 rounded-2xl border border-white/10">
+                <h3 class="text-xl font-bold text-accent mb-3">بعد الأعداد</h3>
+                <p class="text-gray-300 leading-loose">
+                    الأعداد من 11 إلى 99 يأتي بعدها:
+                    اسم مفرد منصوب يُعرب تمييز ذات.
+                </p>
+            </div>
+
+            <div class="bg-black/20 p-5 rounded-2xl border border-white/10 md:col-span-2">
+                <h3 class="text-xl font-bold text-amber-400 mb-3">القاعدة الذهبية 🔥</h3>
+                <p class="text-gray-300 leading-loose">
+                    إذا صحّ تقدير حرف الجر (من) بين الكلمتين فهو تمييز.
+                </p>
+
+                <div class="mt-4 space-y-2">
+                    <div class="bg-green-500/20 border border-green-500/30 p-3 rounded-xl">
+                        اشتريتُ خاتماً ذهباً → خاتم من ذهب ✅
+                    </div>
+
+                    <div class="bg-red-500/20 border border-red-500/30 p-3 rounded-xl">
+                        اشتريتُ قميصاً واسعاً → قميص من واسع ❌
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-10 flex justify-center gap-4">
+            <button onclick="showHome()"
+            class="btn-hover bg-white/10 border border-white/20 px-6 py-3 rounded-full font-bold">
+                رجوع
+            </button>
+
+            <button onclick="startGame()"
+            class="btn-hover px-8 py-3 rounded-full font-bold text-dark"
+            style="background:linear-gradient(45deg,#00b09b,#96c93d)">
+                ابدأ اللعبة ⚔️
+            </button>
+        </div>
+    </div>
+
+    <div id="game-screen" class="hidden pop">
+
+        <div class="flex justify-between items-center bg-black/30 p-4 rounded-2xl border border-white/10 mb-8">
+            <div>
+                🏆 <span id="score">0</span>
+            </div>
+
+            <div>
+                السؤال <span id="current">1</span> / 20
+            </div>
+        </div>
+
+        <div class="bg-white/10 border border-white/10 rounded-3xl p-8 text-center mb-8">
+
+            <div class="inline-block px-4 py-1 rounded-full bg-accent text-dark font-bold mb-5" id="badge">
+                قضية نحوية
+            </div>
+
+            <h2 id="question"
+            class="text-2xl md:text-3xl font-bold leading-loose">
+            </h2>
+        </div>
+
+        <div id="answers"
+        class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        </div>
+    </div>
+
+    <div id="feedback"
+    class="hidden absolute inset-0 bg-[#0f2027]/95 backdrop-blur-xl z-50 flex flex-col justify-center items-center p-6 text-center pop">
+
+        <div id="feedback-icon" class="text-7xl mb-5">✨</div>
+
+        <h2 id="feedback-title" class="text-4xl font-bold mb-4">
+        </h2>
+
+        <div class="bg-black/30 p-6 rounded-2xl border border-white/10 max-w-xl mb-8">
+            <p id="feedback-text" class="text-lg text-gray-200 leading-loose"></p>
+        </div>
+
+        <button onclick="nextQuestion()"
+        class="btn-hover px-8 py-3 rounded-full text-dark font-bold text-lg"
+        style="background:linear-gradient(45deg,#00b09b,#96c93d)">
+            التالي ❯
+        </button>
+    </div>
+
+    <div id="result-screen" class="hidden text-center pop py-10">
+
+        <div id="result-emoji" class="text-8xl mb-6">👑</div>
+
+        <h2 class="text-4xl font-extrabold mb-4">
+            انتهت المهمة!
+        </h2>
+
+        <div class="w-40 h-40 rounded-full border-4 border-accent mx-auto flex flex-col justify-center items-center mb-8 bg-black/30">
+            <span class="text-sm text-gray-400">النتيجة</span>
+            <span id="final-score" class="text-4xl font-bold text-accent">0</span>
+        </div>
+
+        <h3 id="rank" class="text-3xl font-bold mb-6 text-accent"></h3>
+
+        <p id="final-message" class="text-lg text-gray-300 max-w-2xl mx-auto leading-loose mb-8"></p>
+
+        <button onclick="location.reload()"
+        class="btn-hover px-8 py-3 rounded-full text-dark font-bold text-lg"
+        style="background:linear-gradient(45deg,#00b09b,#96c93d)">
+            العب مجدداً ↺
+        </button>
+    </div>
+
+</div>
+
+<script>
+
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playSound(type){
+
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    if(type==='correct'){
+        osc.frequency.value = 700;
+    }
+
+    if(type==='wrong'){
+        osc.frequency.value = 180;
+    }
+
+    if(type==='win'){
+        osc.frequency.value = 900;
+    }
+
+    gain.gain.setValueAtTime(.3,audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(.01,audioCtx.currentTime+.5);
+
+    osc.start();
+    osc.stop(audioCtx.currentTime+.5);
+}
+
+const questions = [
+
+{
+q:'ما تعريف تمييز الذات؟',
+t:'فهم القاعدة',
+a:['اسم معرفة مرفوع','اسم نكرة منصوب يزيل الغموض','فعل ماضٍ','حرف جر'],
+c:1,
+h:'تمييز الذات اسم نكرة منصوب يزيل الغموض عن كلمة واحدة قبله.'
+},
+
+{
+q:'أي الجمل الآتية تحتوي تمييز ذات؟',
+t:'تمييز التمييز',
+a:['السماء صافية','اشتريتُ رطلاً تمراً','الطالب مجتهد','سافر خالد'],
+c:1,
+h:'كلمة (تمراً) أوضحت المقصود بالرطل فهي تمييز ذات.'
+},
+
+{
+q:'تمييز الذات يزيل الغموض عن:',
+t:'فهم',
+a:['جملة كاملة','فقرة','كلمة واحدة','فعل'],
+c:2,
+h:'تمييز الذات يوضح مفردة واحدة تُسمى المميَّز.'
+},
+
+{
+q:'أي الكلمات الآتية من ألفاظ الوزن؟',
+t:'المقادير',
+a:['لتر','رطل','دونم','حفنة'],
+c:1,
+h:'الرطل من ألفاظ الوزن.'
+},
+
+{
+q:'أطعمتُ الدجاج حفنةً قمحاً. ما إعراب قمحاً؟',
+t:'إعراب',
+a:['مفعول به','تمييز ذات منصوب','حال','خبر'],
+c:1,
+h:'جاء بعد شبه مقدار (حفنة).' 
+},
+
+{
+q:'اشتريتُ خاتماً ذهباً. لماذا عُدَّت ذهباً تمييزاً؟',
+t:'فرع التمييز',
+a:['لأنها نعت','لأن الخاتم مصنوع من الذهب','لأنها فعل','لأنها حال'],
+c:1,
+h:'الخاتم فرع والذهب أصل المادة.'
+},
+
+{
+q:'كم طالباً في الصف؟ نوع كم هنا:',
+t:'كم الاستفهامية',
+a:['خبرية','استفهامية','موصولة','شرطية'],
+c:1,
+h:'كم هنا تسأل عن عدد.'
+},
+
+{
+q:'رأيتُ ثلاثةَ عشرَ طالباً. إعراب طالباً:',
+t:'الأعداد',
+a:['حال','تمييز ذات منصوب','مضاف إليه','فاعل'],
+c:1,
+h:'الأعداد من 11-99 تحتاج تمييزاً مفرداً منصوباً.'
+},
+
+{
+q:'اشتريتُ قميصاً واسعاً. كلمة واسعاً:',
+t:'فك الاشتباك',
+a:['تمييز','نعت','حال','خبر'],
+c:1,
+h:'لا يصح أن نقول: قميص من واسع.'
+},
+
+{
+q:'اشتريتُ قميصاً حريراً. كلمة حريراً:',
+t:'تمييز أم نعت؟',
+a:['تمييز','نعت','خبر','حال'],
+c:0,
+h:'يجوز تقدير (من): قميص من حرير.'
+},
+
+{
+q:'أي الجمل الآتية تحتوي كم الخبرية؟',
+t:'كم الخبرية',
+a:['كم طالباً حضر؟','كم كتابٍ قرأتُ!','كم مهندساً في الشركة؟','كم سيارةً اشتريت؟'],
+c:1,
+h:'كم الخبرية تدل على الكثرة ولا تحتاج جواباً.'
+},
+
+{
+q:'كم يوماً سافرتَ؟ إعراب يوماً:',
+t:'إعراب',
+a:['تمييز ذات منصوب','مبتدأ','حال','فاعل'],
+c:0,
+h:'تمييز بعد كم الاستفهامية.'
+},
+
+{
+q:'اشتريتُ رطلَ زيتٍ. إعراب زيتٍ:',
+t:'جر التمييز',
+a:['تمييز مجرور','مضاف إليه مجرور','حال','خبر'],
+c:1,
+h:'إذا جُرّ بدون مِن فهو مضاف إليه.'
+},
+
+{
+q:'اشتريتُ رطلاً من زيتٍ. إعراب زيتٍ:',
+t:'جر بمن',
+a:['مضاف إليه','اسم مجرور','تمييز','فاعل'],
+c:1,
+h:'سبق بحرف الجر من.'
+},
+
+{
+q:'أي الأعداد الآتية يحتاج إلى تمييز مفرد منصوب؟',
+t:'الأعداد',
+a:['خمسة','تسعة','أحد عشر','مئة'],
+c:2,
+h:'الأعداد من 11 إلى 99.'
+},
+
+{
+q:'زرعتُ هكتاراً زيتوناً. كلمة زيتوناً:',
+t:'المساحة',
+a:['حال','تمييز ذات','خبر','فاعل'],
+c:1,
+h:'الهكتار من ألفاظ المساحة.'
+},
+
+{
+q:'أي الكلمات الآتية من أشباه المقادير؟',
+t:'أشباه المقادير',
+a:['طن','هكتار','حفنة','كيلوغرام'],
+c:2,
+h:'الحفنة ليست مقداراً ثابتاً.'
+},
+
+{
+q:'شربتُ كأساً عصيراً. كلمة عصيراً:',
+t:'شبه المقدار',
+a:['مفعول به','تمييز ذات','حال','نعت'],
+c:1,
+h:'الكأس من أشباه المقادير.'
+},
+
+{
+q:'أي الجمل الآتية تحتوي تمييزاً مجروراً بالإضافة؟',
+t:'تمييز مجرور',
+a:['اشتريتُ رطلاً من زيتٍ','اشتريتُ رطلَ زيتٍ','اشتريتُ رطلاً زيتاً','زرعتُ دونماً قمحاً'],
+c:1,
+h:'المميَّز هنا غير منوَّن.'
+},
+
+{
+q:'الأصل في تمييز الذات أن يكون:',
+t:'قاعدة عامة',
+a:['مرفوعاً','مجروراً','منصوباً','مجزوماً'],
+c:2,
+h:'الأصل في التمييز النصب.'
+}
+];
+
+let current = 0;
+let score = 0;
+
+function hideAll(){
+    ['home-screen','lesson-screen','game-screen','result-screen'].forEach(id=>{
+        document.getElementById(id).classList.add('hidden');
+    });
+}
+
+function showHome(){
+    hideAll();
+    document.getElementById('home-screen').classList.remove('hidden');
+}
+
+function showLesson(){
+    hideAll();
+    document.getElementById('lesson-screen').classList.remove('hidden');
+}
+
+function startGame(){
+    hideAll();
+    document.getElementById('game-screen').classList.remove('hidden');
+
+    current = 0;
+    score = 0;
+
+    questions.sort(()=>Math.random()-0.5);
+
+    loadQuestion();
+}
+
+function loadQuestion(){
+
+    document.getElementById('score').textContent = score;
+    document.getElementById('current').textContent = current+1;
+
+    const q = questions[current];
+
+    document.getElementById('badge').textContent = q.t;
+    document.getElementById('question').textContent = q.q;
+
+    const answers = document.getElementById('answers');
+    answers.innerHTML='';
+
+    q.a.forEach((answer,index)=>{
+
+        const btn = document.createElement('button');
+
+        btn.className='btn-hover bg-black/30 border border-white/10 p-5 rounded-2xl text-right text-lg font-bold';
+
+        btn.innerHTML = answer;
+
+        btn.onclick=()=>selectAnswer(index,btn);
+
+        answers.appendChild(btn);
+    });
+}
+
+function selectAnswer(index,btn){
+
+    const q = questions[current];
+
+    const buttons = document.querySelectorAll('#answers button');
+
+    buttons.forEach(b=>b.disabled=true);
+
+    if(index===q.c){
+
+        playSound('correct');
+
+        btn.classList.add('correct');
+
+        score += 10;
+
+        showFeedback(true,q.h);
+
+    }else{
+
+        playSound('wrong');
+
+        btn.classList.add('wrong','shake');
+
+        buttons[q.c].classList.add('correct');
+
+        showFeedback(false,q.h);
+    }
+}
+
+function showFeedback(correct,text){
+
+    document.getElementById('feedback').classList.remove('hidden');
+
+    document.getElementById('feedback-icon').textContent = correct ? '✨' : '⚠️';
+
+    document.getElementById('feedback-title').textContent = correct ? 'تم فك الغموض!' : 'ما زال الغموض قائماً';
+
+    document.getElementById('feedback-title').className = correct
+    ? 'text-4xl font-bold mb-4 text-[#00ffcc]'
+    : 'text-4xl font-bold mb-4 text-[#ffcc00]';
+
+    document.getElementById('feedback-text').innerHTML = text;
+}
+
+function nextQuestion(){
+
+    document.getElementById('feedback').classList.add('hidden');
+
+    current++;
+
+    if(current<questions.length){
+        loadQuestion();
+    }else{
+        finishGame();
+    }
+}
+
+function finishGame(){
+
+    playSound('win');
+
+    hideAll();
+
+    document.getElementById('result-screen').classList.remove('hidden');
+
+    document.getElementById('final-score').textContent = score + ' / 200';
+
+    let rank='';
+    let msg='';
+    let emoji='';
+
+    if(score<60){
+        rank='🧩 مساعد محقق';
+        emoji='🧩';
+        msg='أنت في بداية طريق التحقيق النحوي، وبدأت تكشف أسرار التمييز.';
+    }
+    else if(score<130){
+        rank='🔍 محقق لغوي';
+        emoji='🔍';
+        msg='أصبحت تميّز مواضع التمييز بمهارة جيدة.';
+    }
+    else if(score<180){
+        rank='⚖️ خبير التمييز';
+        emoji='⚖️';
+        msg='مهاراتك النحوية قوية جداً وقد كشفت أغلب القضايا اللغوية.';
+    }
+    else{
+        rank='👑 سيد التحقيق النحوي';
+        emoji='👑';
+        msg='لقد سيطرت على مدينة الغموض النحوي وأصبحت سيد التمييز بلا منازع!';
+    }
+
+    document.getElementById('rank').textContent = rank;
+    document.getElementById('result-emoji').textContent = emoji;
+    document.getElementById('final-message').textContent = msg;
+}
+
+</script>
+
+</body>
+</html>
+```
