@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المشتقات: المبالغة والصفة المشبهة - أكاديمية التأسيس اللغوي</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Tajawal', 'sans-serif'], },
+                    colors: { primary: '#0f2027', secondary: '#203a43', accent: '#00ffcc', dark: '#0f2027', },
+                    animation: { 'bounce-slow': 'bounce 3s infinite', }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body { background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); color: #ffffff; min-height: 100vh; overflow-x: hidden; display: flex; align-items: center; justify-content: center; position: relative; }
+        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); z-index: -2; }
+        .bg-circle { position: fixed; border-radius: 50%; background: radial-gradient(circle, rgba(0,255,200,0.15) 0%, rgba(0,0,0,0) 70%); z-index: -1; pointer-events: none; }
+        .circle1 { width: 600px; height: 600px; top: -200px; right: -200px; }
+        .circle2 { width: 500px; height: 500px; bottom: -150px; left: -150px; background: radial-gradient(circle, rgba(255,100,150,0.1) 0%, rgba(0,0,0,0) 70%); }
+        .glass-panel { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        .btn-hover-effect { transition: all 0.3s ease; }
+        .btn-hover-effect:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+        .pop-in { animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .correct-bg { background: linear-gradient(45deg, #00b09b, #96c93d) !important; color: white !important; border-color: transparent !important;}
+        .wrong-bg { background: linear-gradient(45deg, #cb2d3e, #ef473a) !important; color: white !important; border-color: transparent !important;}
+        .back-home-btn { position: absolute; top: 20px; right: 20px; background: rgba(255, 255, 255, 0.1); color: #fff; padding: 8px 16px; border-radius: 20px; text-decoration: none; font-size: 0.9rem; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s ease; z-index: 50; display: flex; align-items: center; gap: 5px; }
+        .back-home-btn:hover { background: rgba(255, 255, 255, 0.2); transform: translateX(-5px); }
+    </style>
+</head>
+<body class="p-4">
+
+    <div class="bg-circle circle1"></div>
+    <div class="bg-circle circle2"></div>
+
+    <div id="login-overlay" class="fixed inset-0 bg-[#0f2027]/95 backdrop-blur-xl z-[100] flex flex-col items-center justify-center p-6 transition-opacity duration-500 hidden">
+        <div class="bg-white/10 border border-white/20 p-8 rounded-3xl max-w-md w-full text-center shadow-2xl pop-in">
+            <div class="text-6xl mb-4 drop-shadow-lg">👑</div>
+            <h2 class="text-3xl font-bold text-white mb-2">مرحباً بك يا بطل!</h2>
+            <p class="text-gray-300 mb-6">أدخل اسمك الكريم لنقوم بتسجيل إنجازاتك في متصفحك.</p>
+            <input type="text" id="player-name-input" placeholder="اسم الفارس..." class="w-full bg-black/30 border border-accent/50 text-white px-4 py-3 rounded-xl mb-4 focus:outline-none focus:border-accent text-center text-lg">
+            <p id="login-error" class="text-red-400 text-sm mb-4 hidden">أرجوك اكتب اسمك لتبدأ التحدي!</p>
+            <button onclick="savePlayerName()" class="w-full text-dark px-8 py-3 rounded-xl font-bold text-xl shadow-[0_5px_15px_rgba(0,176,155,0.4)] transition-transform hover:scale-105" style="background: linear-gradient(45deg, #00b09b, #96c93d);">دخول للمنصة 🚀</button>
+        </div>
+    </div>
+
+    <a href="javascript:history.back()" class="back-home-btn">
+        <span>⬅️</span> العودة للخلف
+    </a>
+
+    <!-- Main Container -->
+    <div class="glass-panel rounded-3xl w-full max-w-5xl p-6 md:p-10 relative z-10 transition-all duration-500" id="main-container">
+        
+        <!-- 1. Home Screen -->
+        <div id="screen-home" class="text-center flex flex-col items-center justify-center space-y-8 py-10 pop-in hidden">
+            
+            <div class="inline-block bg-white/10 border border-accent/30 px-6 py-2 rounded-full mb-2">
+                <span class="text-gray-300">أهلاً بالفارس المغوار:</span>
+                <span id="welcome-player-name" class="font-bold text-accent ml-1">...</span>
+            </div>
+
+            <div class="text-6xl mb-4 drop-shadow-[0_0_15px_rgba(0,255,200,0.5)]">⚖️</div>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-2 tracking-wide drop-shadow-md">المشتقات اللغوية</h1>
+            <h2 class="text-xl md:text-2xl text-accent font-semibold drop-shadow">صيغة المبالغة والصفة المشبهة</h2>
+            <p class="text-gray-300 max-w-lg mx-auto text-lg leading-relaxed mt-4">
+                اكتشف القاعدة الذهبية للتمييز بينهما، واصطد الفخاخ في الأوزان المشتركة بذكاء!
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 mt-8 w-full justify-center">
+                <button onclick="showScreen('screen-lesson')" class="btn-hover-effect bg-white/10 border border-white/20 text-white hover:bg-white/20 px-8 py-3 rounded-full font-bold text-lg flex items-center justify-center gap-2">
+                    مراجعة القاعدة
+                </button>
+                <button onclick="startGame()" class="btn-hover-effect text-dark px-8 py-3 rounded-full font-bold text-lg flex items-center justify-center gap-2 shadow-[0_5px_15px_rgba(0,176,155,0.4)]" style="background: linear-gradient(45deg, #00b09b, #96c93d);">
+                    ابدأ التحدي
+                </button>
+            </div>
+            
+            <div class="mt-4 text-gray-400 text-sm">
+                مجموع نقاطك التراكمية: <span id="home-total-score" class="font-bold text-accent">0</span> 🏆
+            </div>
+        </div>
+
+        <!-- 2. Lesson Screen -->
+        <div id="screen-lesson" class="hidden flex flex-col items-center justify-center w-full pop-in">
+            <h2 class="text-3xl font-bold text-accent mb-6">مراجعة القاعدة بالتفصيل 📖</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full text-right mb-8 text-sm md:text-base">
+                
+                <!-- المعنى والدلالة -->
+                <div class="bg-black/20 p-5 rounded-2xl border border-white/10">
+                    <h3 class="text-xl font-bold text-accent mb-3 border-b border-white/10 pb-2">1. من حيث المعنى والدلالة</h3>
+                    <ul class="list-disc list-inside text-gray-300 space-y-2">
+                        <li><strong class="text-white">صيغة المبالغة:</strong> تدل على من يقوم بالحدث بكثرة ومبالغة (كذّاب، أكول، مِعطاء).</li>
+                        <li><strong class="text-white">الصفة المشبهة:</strong> تدل على صفة ثابتة أو شبه دائمية (طويل، بخيل، شجاع)، وترتبط غالباً بـ: الألوان (أحمر)، العيوب (أعور)، الصفات الجسدية، وما يدل على الخلو والامتلاء (عطشان، شبعان).</li>
+                    </ul>
+                </div>
+
+                <!-- القاعدة الذهبية -->
+                <div class="bg-black/20 p-5 rounded-2xl border border-amber-400/50 shadow-[0_0_15px_rgba(251,191,36,0.1)]">
+                    <h3 class="text-xl font-bold text-amber-400 mb-3 border-b border-white/10 pb-2">2. القاعدة الذهبية (اللزوم والتعدي) 🌟</h3>
+                    <ul class="list-disc list-inside text-gray-300 space-y-2">
+                        <li><strong class="text-white">صيغة المبالغة:</strong> تُشتق من الفعل <span class="text-accent">المتعدي</span> (يقبل الهاء). <br>مثال: "سَمِعَ" متعدٍ (سَمِعَهُ)، فالمشتق "سَميع" مبالغة.</li>
+                        <li><strong class="text-white">الصفة المشبهة:</strong> تُشتق من الفعل <span class="text-rose-400">اللازم</span> (لا يقبل الهاء). <br>مثال: "جَمُلَ" لازم (لا يجوز جَمُلَهُ)، فالمشتق "جَميل" صفة مشبهة.</li>
+                    </ul>
+                </div>
+
+                <!-- الأوزان -->
+                <div class="bg-black/20 p-5 rounded-2xl border border-white/10 lg:col-span-2">
+                    <h3 class="text-xl font-bold text-accent mb-3 border-b border-white/10 pb-2">3. الأوزان المشهورة</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <strong class="text-white block mb-1">أوزان المبالغة:</strong>
+                            <p class="text-gray-300 leading-relaxed">
+                                فَعّال (جبّار)، مِفْعال (مِعطاء)، فَعول (أكول)، فَعيل (رحيم)، فَعِل (حَذِر).<br>
+                                <span class="text-xs text-gray-400">وقد تأتي: فِعّيل (صِدّيق)، فاعول (فاروق).</span>
+                            </p>
+                        </div>
+                        <div>
+                            <strong class="text-white block mb-1">أوزان الصفة المشبهة:</strong>
+                            <p class="text-gray-300 leading-relaxed">
+                                أفْعَل/فَعْلاء (أحمر/حمراء)، فَعْلان/فَعْلَى (عطشان/عطشى).<br>
+                                فَعَال (جَبان)، فُعَال (شُجاع)، فَعيل (كريم)، فَعْل (شَهْم)، فَعَل (بَطَل)، فَعِل (فَرِح)، فُعْل (صُلْب).
+                            </p>
+                        </div>
+                    </div>
+                    <div class="mt-4 p-3 bg-rose-500/20 border border-rose-500/50 rounded-lg">
+                        <strong class="text-rose-400">⚠️ تنبيه لفك الاشتباك:</strong> الوزنان <span class="text-white font-bold">(فَعيل)</span> و <span class="text-white font-bold">(فَعِل)</span> مشتركان! للتمييز بينهما استخدم "القاعدة الذهبية": أرجع الكلمة لفعلها، إن كان متعدياً فهي (مبالغة)، وإن كان لازماً فهي (صفة مشبهة).
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-4">
+                <button onclick="showScreen('screen-home')" class="btn-hover-effect bg-white/10 border border-white/20 text-white px-6 py-2 rounded-full font-bold text-lg">رجوع</button>
+                <button onclick="startGame()" class="btn-hover-effect text-dark px-8 py-2 rounded-full font-bold text-lg" style="background: linear-gradient(45deg, #00b09b, #96c93d);">العب الآن!</button>
+            </div>
+        </div>
+
+        <!-- 3. Game Screen -->
+        <div id="screen-game" class="hidden flex flex-col w-full h-full relative pop-in">
+            <div class="flex justify-between items-center bg-black/30 p-4 rounded-xl border border-white/10 mb-8 backdrop-blur-sm">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">🏆</span>
+                    <span class="text-xl font-bold text-accent" id="score-display">0</span>
+                </div>
+                <div class="text-lg font-semibold text-gray-300">
+                    السؤال: <span id="question-counter" class="text-white font-bold">1</span> / <span id="total-questions">20</span>
+                </div>
+            </div>
+            <div class="bg-white/10 border border-white/20 rounded-2xl p-8 shadow-xl text-center relative mb-8 backdrop-blur-md" id="question-card">
+                <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-1 rounded-full text-sm font-bold shadow-md" style="background: linear-gradient(45deg, #00b09b, #96c93d); color: #0f2027;" id="question-type-badge">
+                    التحدي
+                </div>
+                <h3 class="text-2xl md:text-3xl font-bold text-white mb-4 mt-4 leading-relaxed" id="question-text">جاري التحميل...</h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="options-container"></div>
+        </div>
+
+        <!-- 4. Feedback Modal Overlay -->
+        <div id="feedback-overlay" class="hidden absolute inset-0 bg-[#0f2027]/90 backdrop-blur-md z-50 flex flex-col items-center justify-center p-6 rounded-3xl pop-in">
+            <div id="feedback-icon" class="text-7xl mb-4">✨</div>
+            <h2 id="feedback-title" class="text-4xl font-bold mb-4 text-white">إجابة صحيحة!</h2>
+            <div class="bg-black/40 border border-white/10 p-6 rounded-xl max-w-lg w-full mb-8 text-center shadow-lg">
+                <p id="feedback-text" class="text-lg text-gray-200 leading-relaxed"></p>
+            </div>
+            <button onclick="nextQuestion()" class="btn-hover-effect text-dark px-10 py-3 rounded-full font-bold text-xl" style="background: linear-gradient(45deg, #00b09b, #96c93d);">السؤال التالي ❯</button>
+        </div>
+
+        <!-- 5. Result Screen -->
+        <div id="screen-result" class="hidden flex flex-col items-center justify-center text-center space-y-6 py-8 pop-in">
+            <div class="text-8xl mb-4" id="result-emoji">🏅</div>
+            <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-2">اكتمل التحدي!</h2>
+            <div class="bg-black/30 border-2 border-accent/50 rounded-full w-40 h-40 flex flex-col items-center justify-center mx-auto mt-6 mb-2">
+                <span class="text-sm text-gray-400 mb-1">نتيجة التحدي</span>
+                <span class="text-4xl font-bold text-accent" id="final-score">20/20</span>
+            </div>
+            <h3 class="text-3xl font-bold text-white mt-2" id="result-title">خبير المشتقات</h3>
+            
+            <div class="bg-white/5 border border-white/10 p-4 rounded-xl mt-4">
+                <p class="text-gray-300 text-lg" id="result-message">جاري الحساب...</p>
+            </div>
+            
+            <div class="flex gap-4 mt-6">
+                <a href="javascript:history.back()" class="btn-hover-effect bg-white/10 border border-white/20 text-white px-6 py-3 rounded-full font-bold text-lg hover:bg-white/20">العودة للمسارات</a>
+                <button onclick="startGame()" class="btn-hover-effect text-dark px-8 py-3 rounded-full font-bold text-lg" style="background: linear-gradient(45deg, #00b09b, #96c93d);">العب مرة أخرى ↺</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode); gainNode.connect(audioCtx.destination);
+            if (type === 'correct') {
+                oscillator.type = 'sine'; oscillator.frequency.setValueAtTime(523.25, audioCtx.currentTime); 
+                oscillator.frequency.exponentialRampToValueAtTime(1046.50, audioCtx.currentTime + 0.1); 
+                gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.5);
+            } else if (type === 'wrong') {
+                oscillator.type = 'sawtooth'; oscillator.frequency.setValueAtTime(150, audioCtx.currentTime); 
+                oscillator.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.3);
+                gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.3);
+            } else if (type === 'win') {
+                const notes = [440, 554.37, 659.25, 880];
+                notes.forEach((freq, i) => {
+                    const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+                    osc.connect(gain); gain.connect(audioCtx.destination); osc.type = 'triangle'; osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.3, audioCtx.currentTime + i * 0.15); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.15 + 0.3);
+                    osc.start(audioCtx.currentTime + i * 0.15); osc.stop(audioCtx.currentTime + i * 0.15 + 0.3);
+                });
+            }
+        }
+
+        function checkLogin() {
+            const playerName = localStorage.getItem('bahaa_student_name');
+            const totalScore = localStorage.getItem('bahaa_total_score') || '0';
+            
+            if (!playerName) {
+                document.getElementById('login-overlay').classList.remove('hidden');
+                document.getElementById('screen-home').classList.add('hidden');
+            } else {
+                document.getElementById('welcome-player-name').textContent = playerName;
+                document.getElementById('home-total-score').textContent = totalScore;
+                document.getElementById('screen-home').classList.remove('hidden');
+            }
+        }
+
+        function savePlayerName() {
+            const inputName = document.getElementById('player-name-input').value.trim();
+            if (inputName.length < 2) {
+                document.getElementById('login-error').classList.remove('hidden');
+                return;
+            }
+            localStorage.setItem('bahaa_student_name', inputName);
+            if(!localStorage.getItem('bahaa_total_score')) localStorage.setItem('bahaa_total_score', '0'); 
+            
+            document.getElementById('login-overlay').classList.add('hidden');
+            document.getElementById('welcome-player-name').textContent = inputName;
+            document.getElementById('home-total-score').textContent = localStorage.getItem('bahaa_total_score');
+            document.getElementById('screen-home').classList.remove('hidden');
+            document.getElementById('screen-home').classList.add('pop-in');
+        }
+
+        window.addEventListener('DOMContentLoaded', checkLogin);
+
+        // --- 20 Questions ---
+        const gameQuestions = [
+            { type: "تحديد المعنى", question: "المشتق الذي يدل على القيام بالحدث بكثرة ومبالغة يُسمى:", options: ["اسم الفاعل", "الصفة المشبهة", "صيغة المبالغة", "اسم التفضيل"], correct: 2, hint: "تذكر كلمات مثل: كذّاب، أكول." },
+            { type: "تحديد المعنى", question: "المشتق الذي يدل على صفة ثابتة أو شبه دائمية في الموصوف هو:", options: ["صيغة المبالغة", "الصفة المشبهة", "اسم المفعول", "المصدر"], correct: 1, hint: "تذكر كلمات مثل: طويل، بخيل، شجاع." },
+            { type: "القاعدة الذهبية", question: "تُشتق (صيغة المبالغة) غالباً من الفعل:", options: ["المتعدي", "اللازم", "المبني للمجهول", "الناقص"], correct: 0, hint: "الفعل الذي يحتاج إلى مفعول به ويقبل اتصال الهاء (مثل: سَمِعَهُ)." },
+            { type: "القاعدة الذهبية", question: "تُشتق (الصفة المشبهة) دائماً من الفعل:", options: ["المتعدي", "اللازم", "الرباعي", "المزيد"], correct: 1, hint: "الفعل الذي يكتفي بفاعله ولا يقبل الهاء (مثل: جَمُلَ)." },
+            { type: "دلالة المعنى", question: "كلمة (عطشان) تُعد صفة مشبهة لأنها تدل على:", options: ["لون", "عيب", "خلو وامتلاء", "كثرة الفعل"], correct: 2, hint: "الكلمات الدالة على الجوع، والعطش، والشبع تندرج تحت هذا المعنى." },
+            { type: "تطبيق القاعدة", question: "الفعل (سَمِعَ) فعل متعدٍ لأنه يقبل الهاء (سمعه)، فالمشتق (سَمِيع) يُعد:", options: ["صفة مشبهة", "صيغة مبالغة", "اسم زمان", "اسم آلة"], correct: 1, hint: "بما أن الفعل متعدٍ، فالوزن (فَعيل) هنا يكون للمبالغة." },
+            { type: "تطبيق القاعدة", question: "الفعل (جَمُلَ) فعل لازم لا يقبل الهاء، فالمشتق (جَمِيل) يُعد:", options: ["صفة مشبهة", "صيغة مبالغة", "اسم مفعول", "مصدراً"], correct: 0, hint: "بما أن الفعل لازم، فالوزن (فَعيل) هنا يكون للصفة." },
+            { type: "حفظ الأوزان", question: "أي الأوزان التالية **ليس** من أوزان صيغة المبالغة القياسية المشهورة؟", options: ["فَعّال", "مِفْعال", "فَعول", "أَفْعَل"], correct: 3, hint: "الوزن الأخير يُستخدم للألوان والعيوب وهو خاص بالصفة المشبهة." },
+            { type: "استخراج", question: "ما نوع المشتق في كلمة (مِعْطَاء)؟", options: ["صيغة مبالغة", "صفة مشبهة", "اسم تفضيل", "اسم فاعل"], correct: 0, hint: "جاءت على وزن (مِفْعَال) وتدل على كثرة العطاء." },
+            { type: "استخراج", question: "ما نوع المشتق في كلمة (أعْوَر)؟", options: ["صيغة مبالغة", "صفة مشبهة", "اسم مفعول", "اسم مكان"], correct: 1, hint: "جاءت على وزن (أفْعَل) وتدل على عيب (خلقة)." },
+            { type: "تحديد الوزن", question: "كلمة (شُجَاع) صفة مشبهة جاءت على وزن:", options: ["فَعَال", "فُعَال", "فِعَال", "فَعُول"], correct: 1, hint: "انتبه لحركة الحرف الأول (الشين مضمومة)." },
+            { type: "تحديد المشتق", question: "استخرج صيغة المبالغة من الكلمات الآتية:", options: ["عظيم", "طويل", "أكُول", "حَسَن"], correct: 2, hint: "ابحث عن كلمة تدل على كثرة القيام بالفعل (كثرة الأكل)." },
+            { type: "تحديد المشتق", question: "استخرج الصفة المشبهة من الكلمات الآتية:", options: ["صِدّيق", "كَذّاب", "أحمر", "غَفّار"], correct: 2, hint: "ابحث عن كلمة تدل على لون على وزن أفعل." },
+            { type: "فك الاشتباك", question: "الوزنان المشتركان بين صيغة المبالغة والصفة المشبهة هما:", options: ["فَعُول وفَعّال", "فَعِيل وفَعِل", "مِفْعَال وأفْعَل", "فَعَال وفُعَال"], correct: 1, hint: "وزنان يمكن أن يكونا مبالغة أو صفة، ونميز بينهما باللزوم والتعدي." },
+            { type: "فخ نحوي (فَعيل)", question: "كلمة (رَحِيم) على وزن فَعيل. لإثبات أنها صيغة مبالغة نلاحظ أن فعلها (رَحِمَ):", options: ["لازم", "متعدٍ", "مبني للمجهول", "معتل"], correct: 1, hint: "نقول (رحمه الله)، فالفعل يقبل الهاء." },
+            { type: "فخ نحوي (فَعيل)", question: "كلمة (بَخِيل) على وزن فَعيل. ما نوعها ولماذا؟", options: ["مبالغة لأن فعلها متعدٍ", "مبالغة لأن فعلها لازم", "صفة مشبهة لأن فعلها متعدٍ", "صفة مشبهة لأن فعلها لازم"], correct: 3, hint: "فعلها (بَخُلَ)، هل نقول (بَخُلَهُ)؟ لا. إذن هو لازم." },
+            { type: "فخ نحوي (فَعِل)", question: "كلمة (حَذِر) على وزن فَعِل. فعلها (حَذِرَ) متعدٍ (حذره)، إذن هي:", options: ["صيغة مبالغة", "صفة مشبهة", "اسم آلة", "اسم فاعل"], correct: 0, hint: "بما أن الفعل متعدٍ، فالوزن المشترك يذهب للمبالغة." },
+            { type: "فخ نحوي (فَعِل)", question: "كلمة (فَرِح) على وزن فَعِل. فعلها (فَرِحَ) لازم (فرح به)، إذن هي:", options: ["صيغة مبالغة", "صفة مشبهة", "اسم زمان", "مصدر"], correct: 1, hint: "بما أن الفعل لازم، فالوزن المشترك يذهب للصفة." },
+            { type: "تحديد الوزن", question: "كلمة (شَهْم) صفة مشبهة، ما هو وزنها الصرفي؟", options: ["فَعَل", "فَعِل", "فَعْل", "فُعْل"], correct: 2, hint: "انتبه لحركة الهاء (ساكنة)، إذن العين في الميزان ساكنة." },
+            { type: "تطبيق شامل", question: "في جملة (هذا جنديٌّ **صَبُورٌ**). كلمة (صبور) نوعها:", options: ["صيغة مبالغة على وزن فَعُول", "صفة مشبهة على وزن فَعُول", "صيغة مبالغة على وزن فَعّال", "صفة مشبهة على وزن فَعَال"], correct: 0, hint: "تدل على كثرة الصبر، ووزنها يبدأ بفتح الصاد وضم الباء." }
+        ];
+
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let canAnswer = false;
+
+        function showScreen(screenId) {
+            ['screen-home', 'screen-lesson', 'screen-game', 'screen-result', 'feedback-overlay'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+
+        function startGame() {
+            currentQuestions = [...gameQuestions].sort(() => 0.5 - Math.random());
+            currentIndex = 0; score = 0;
+            document.getElementById('score-display').textContent = score;
+            showScreen('screen-game');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            canAnswer = true;
+            const q = currentQuestions[currentIndex];
+            document.getElementById('question-counter').textContent = currentIndex + 1;
+            document.getElementById('question-text').textContent = q.question;
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            const letters = ['أ', 'ب', 'ج', 'د'];
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-hover-effect bg-black/30 hover:bg-black/50 border border-white/10 text-white py-4 px-6 rounded-xl text-lg text-right flex justify-between w-full shadow-md';
+                btn.innerHTML = `<span>${opt}</span><span class="w-8 h-8 rounded-full border border-accent/50 flex items-center justify-center text-sm font-bold text-accent">${letters[index]}</span>`;
+                btn.onclick = () => handleAnswer(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(selectedIndex, btnElement) {
+            if (!canAnswer) return;
+            canAnswer = false;
+            const q = currentQuestions[currentIndex];
+            const allBtns = document.getElementById('options-container').querySelectorAll('button');
+            
+            if (selectedIndex === q.correct) {
+                playSound('correct');
+                btnElement.classList.add('correct-bg');
+                score += 10;
+                document.getElementById('score-display').textContent = score;
+                showFeedback(true, q.hint);
+            } else {
+                playSound('wrong');
+                btnElement.classList.add('wrong-bg', 'shake');
+                allBtns[q.correct].classList.add('correct-bg'); 
+                showFeedback(false, q.hint);
+            }
+        }
+
+        function showFeedback(isCorrect, hintText) {
+            setTimeout(() => {
+                document.getElementById('feedback-overlay').classList.remove('hidden');
+                document.getElementById('feedback-title').textContent = isCorrect ? 'إجابة مبهرة!' : 'فرصة للتعلم';
+                document.getElementById('feedback-title').className = isCorrect ? 'text-4xl font-bold mb-4 text-[#00ffcc]' : 'text-4xl font-bold mb-4 text-[#ffcc00]';
+                document.getElementById('feedback-text').innerHTML = `<strong class="text-white">التفسير:</strong> ${hintText}`;
+            }, 700);
+        }
+
+        function nextQuestion() {
+            document.getElementById('feedback-overlay').classList.add('hidden');
+            currentIndex++;
+            if (currentIndex < currentQuestions.length) loadQuestion();
+            else endGame();
+        }
+
+        function endGame() {
+            playSound('win');
+            showScreen('screen-result');
+            const maxScore = currentQuestions.length * 10;
+            document.getElementById('final-score').textContent = `${score} / ${maxScore}`;
+            
+            let currentTotal = parseInt(localStorage.getItem('bahaa_total_score') || '0');
+            currentTotal += score;
+            localStorage.setItem('bahaa_total_score', currentTotal);
+            
+            document.getElementById('home-total-score').textContent = currentTotal;
+
+            const msgEl = document.getElementById('result-message');
+            msgEl.innerHTML = `عمل رائع! لقد حصدت <span class="text-accent font-bold">${score}</span> نقطة في هذا التحدي.<br>إجمالي نقاطك التراكمية الآن: <span class="text-accent font-bold text-2xl">${currentTotal}</span> 🏆`;
+        }
+    </script>
+</body>
+</html>
