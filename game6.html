@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحدي الحال - الأستاذ بهاء المقداد</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Tajawal', 'sans-serif'] },
+                    colors: { primary: '#0f2027', secondary: '#203a43', accent: '#00ffcc', dark: '#0f2027' },
+                    animation: { 'bounce-slow': 'bounce 3s infinite' }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #ffffff; min-height: 100vh; overflow-x: hidden;
+            display: flex; align-items: center; justify-content: center; position: relative;
+        }
+        body::before {
+            content: ''; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); z-index: -2;
+        }
+        .bg-circle { position: fixed; border-radius: 50%; background: radial-gradient(circle, rgba(0,255,200,0.15) 0%, rgba(0,0,0,0) 70%); z-index: -1; pointer-events: none; }
+        .circle1 { width: 600px; height: 600px; top: -200px; right: -200px; }
+        .circle2 { width: 500px; height: 500px; bottom: -150px; left: -150px; background: radial-gradient(circle, rgba(255,100,150,0.1) 0%, rgba(0,0,0,0) 70%); }
+        .glass-panel { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        .btn-hover-effect { transition: all 0.3s ease; }
+        .btn-hover-effect:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+        .pop-in { animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .correct-bg { background: linear-gradient(45deg, #00b09b, #96c93d) !important; color: white !important; border-color: transparent !important; }
+        .wrong-bg { background: linear-gradient(45deg, #cb2d3e, #ef473a) !important; color: white !important; border-color: transparent !important; }
+        .back-home-btn {
+            position: absolute; top: 20px; right: 20px; background: rgba(255, 255, 255, 0.1); color: #fff;
+            padding: 8px 16px; border-radius: 20px; text-decoration: none; font-size: 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s ease; z-index: 50; display: flex; align-items: center; gap: 5px;
+        }
+        .back-home-btn:hover { background: rgba(255, 255, 255, 0.2); transform: translateX(-5px); }
+        .difficulty-easy   { border-right: 4px solid #22c55e; }
+        .difficulty-medium { border-right: 4px solid #f59e0b; }
+        .difficulty-hard   { border-right: 4px solid #ef4444; }
+        .badge-easy   { background: rgba(34,197,94,0.2); color: #86efac; }
+        .badge-medium { background: rgba(245,158,11,0.2); color: #fcd34d; }
+        .badge-hard   { background: rgba(239,68,68,0.2); color: #fca5a5; }
+    </style>
+</head>
+<body class="p-4">
+
+    <div class="bg-circle circle1"></div>
+    <div class="bg-circle circle2"></div>
+
+    <!-- Login Overlay -->
+    <div id="login-overlay" class="fixed inset-0 bg-[#0f2027]/95 backdrop-blur-xl z-[100] flex flex-col items-center justify-center p-6 hidden">
+        <div class="bg-white/10 border border-white/20 p-8 rounded-3xl max-w-md w-full text-center shadow-2xl pop-in">
+            <div class="text-6xl mb-4 drop-shadow-lg">🌊</div>
+            <h2 class="text-3xl font-bold text-white mb-2">تحدي الحال!</h2>
+            <p class="text-gray-300 mb-6">أدخل اسمك الكريم لتبدأ رحلتك مع الحال النحوي.</p>
+            <input type="text" id="player-name-input" placeholder="اسمك الكريم..." class="w-full bg-black/30 border border-accent/50 text-white px-4 py-3 rounded-xl mb-4 focus:outline-none focus:border-accent text-center text-lg">
+            <p id="login-error" class="text-red-400 text-sm mb-4 hidden">أرجوك اكتب اسمك لتبدأ التحدي!</p>
+            <button onclick="savePlayerName()" class="w-full text-dark px-8 py-3 rounded-xl font-bold text-xl shadow-[0_5px_15px_rgba(0,176,155,0.4)] transition-transform hover:scale-105" style="background: linear-gradient(45deg, #00b09b, #96c93d);">دخول للتحدي 🚀</button>
+        </div>
+    </div>
+
+    <a href="javascript:history.back()" class="back-home-btn">
+        <span>⬅️</span> العودة للخلف
+    </a>
+
+    <!-- Main Container -->
+    <div class="glass-panel rounded-3xl w-full max-w-5xl p-6 md:p-10 relative z-10" id="main-container">
+
+        <!-- 1. Home Screen -->
+        <div id="screen-home" class="text-center flex flex-col items-center justify-center space-y-8 py-10 pop-in hidden">
+            <div class="inline-block bg-white/10 border border-accent/30 px-6 py-2 rounded-full">
+                <span class="text-gray-300">أهلاً بالفارس:</span>
+                <span id="welcome-player-name" class="font-bold text-accent mr-1">...</span>
+            </div>
+            <div class="text-6xl drop-shadow-[0_0_15px_rgba(0,255,200,0.5)]">🌊</div>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-white tracking-wide drop-shadow-md">الحال في النحو العربي</h1>
+            <h2 class="text-xl md:text-2xl text-accent font-semibold">تعريفه • أنواعه • إعرابه • رابطه</h2>
+            <p class="text-gray-300 max-w-lg mx-auto text-lg leading-relaxed">
+                20 سؤالاً متدرج الصعوبة — من التعريف البسيط إلى فخاخ التمييز والتعدد. هل أنت مستعد؟
+            </p>
+            <!-- مؤشر الصعوبة -->
+            <div class="flex gap-4 justify-center flex-wrap">
+                <div class="flex items-center gap-2 bg-green-500/10 border border-green-500/30 px-4 py-2 rounded-full">
+                    <span class="w-3 h-3 rounded-full bg-green-400 inline-block"></span>
+                    <span class="text-green-300 text-sm font-bold">سهل × 5</span>
+                </div>
+                <div class="flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 px-4 py-2 rounded-full">
+                    <span class="w-3 h-3 rounded-full bg-amber-400 inline-block"></span>
+                    <span class="text-amber-300 text-sm font-bold">متوسط × 5</span>
+                </div>
+                <div class="flex items-center gap-2 bg-red-500/10 border border-red-500/30 px-4 py-2 rounded-full">
+                    <span class="w-3 h-3 rounded-full bg-red-400 inline-block"></span>
+                    <span class="text-red-300 text-sm font-bold">صعب × 10</span>
+                </div>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-4 mt-4 w-full justify-center">
+                <button onclick="showScreen('screen-lesson')" class="btn-hover-effect bg-white/10 border border-white/20 text-white hover:bg-white/20 px-8 py-3 rounded-full font-bold text-lg flex items-center justify-center gap-2">
+                    📖 مراجعة القاعدة
+                </button>
+                <button onclick="startGame()" class="btn-hover-effect text-dark px-8 py-3 rounded-full font-bold text-lg flex items-center justify-center gap-2 shadow-[0_5px_15px_rgba(0,176,155,0.4)]" style="background: linear-gradient(45deg, #00b09b, #96c93d);">
+                    ⚡ ابدأ التحدي
+                </button>
+            </div>
+            <div class="text-gray-400 text-sm">
+                نقاطك التراكمية: <span id="home-total-score" class="font-bold text-accent">0</span> 🏆
+            </div>
+        </div>
+
+        <!-- 2. Lesson Screen -->
+        <div id="screen-lesson" class="hidden flex flex-col items-center justify-center w-full pop-in">
+            <h2 class="text-3xl font-bold text-accent mb-6 text-center">مراجعة قاعدة الحال 📖</h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 w-full text-right mb-8 text-sm md:text-base">
+
+                <!-- تعريف الحال -->
+                <div class="bg-black/20 p-5 rounded-2xl border border-accent/30 shadow-[0_0_15px_rgba(0,255,200,0.05)]">
+                    <h3 class="text-xl font-bold text-accent mb-3 border-b border-white/10 pb-2">1. تعريف الحال وحكمه</h3>
+                    <ul class="list-disc list-inside text-gray-300 space-y-2">
+                        <li><strong class="text-white">الحال:</strong> وصف <span class="text-accent font-bold">نكرة</span> يأتي لبيان هيئة صاحبه وقت وقوع الفعل.</li>
+                        <li><strong class="text-white">حكمه:</strong> <span class="text-rose-400 font-bold">النصب دائماً</span>. مثال: جاء الطالبُ <span class="text-accent">مسرعاً</span>.</li>
+                        <li><strong class="text-white">السؤال عنه:</strong> نسأل بـ <span class="text-amber-300">(كيف؟)</span>. كيف جاء الطالب؟ مسرعاً.</li>
+                    </ul>
+                </div>
+
+                <!-- صور صاحب الحال -->
+                <div class="bg-black/20 p-5 rounded-2xl border border-white/10">
+                    <h3 class="text-xl font-bold text-accent mb-3 border-b border-white/10 pb-2">2. صور صاحب الحال</h3>
+                    <ul class="list-disc list-inside text-gray-300 space-y-2">
+                        <li><strong class="text-white">اسم ظاهر:</strong> جاء <span class="text-accent">المعلمُ</span> مبتسماً. ← صاحبه (المعلم)</li>
+                        <li><strong class="text-white">ضمير متصل:</strong> رأيتُ<span class="text-accent">كَ</span> واقفاً. ← صاحبه (الكاف)</li>
+                        <li><strong class="text-white">ضمير مستتر:</strong> خرجَ مبتسماً. ← صاحبه (هو مستتر)</li>
+                        <li class="text-amber-300 font-bold">⚠️ يشترط أن يكون صاحب الحال <span class="text-white">معرفة</span>.</li>
+                    </ul>
+                </div>
+
+                <!-- أنواع الحال -->
+                <div class="bg-black/20 p-5 rounded-2xl border border-amber-400/30 shadow-[0_0_15px_rgba(251,191,36,0.05)]">
+                    <h3 class="text-xl font-bold text-amber-400 mb-3 border-b border-white/10 pb-2">3. أنواع الحال 🌟</h3>
+                    <ul class="list-disc list-inside text-gray-300 space-y-2">
+                        <li><strong class="text-white">مفرد:</strong> عاد الجنديُّ <span class="text-accent">منتصراً</span>.</li>
+                        <li><strong class="text-white">جملة فعلية:</strong> رأيتُ الطالبَ <span class="text-accent">يكتبُ</span>. (الجملة كلها حال)</li>
+                        <li><strong class="text-white">جملة اسمية:</strong> جاء المعلمُ <span class="text-accent">وجهُهُ مشرقٌ</span>.</li>
+                        <li><strong class="text-white">شبه جملة (جار ومجرور):</strong> جاء الجنديُّ <span class="text-accent">على صهوة جوادٍ</span>.</li>
+                        <li><strong class="text-white">شبه جملة (ظرف):</strong> جلستُ <span class="text-accent">أمامَ المعلمِ</span>.</li>
+                    </ul>
+                </div>
+
+                <!-- علامات النصب والرابط والتعدد -->
+                <div class="bg-black/20 p-5 rounded-2xl border border-white/10">
+                    <h3 class="text-xl font-bold text-accent mb-3 border-b border-white/10 pb-2">4. علامات النصب • الرابط • التعدد</h3>
+                    <ul class="list-disc list-inside text-gray-300 space-y-2">
+                        <li><strong class="text-white">الفتحة:</strong> سالماً، مبتسمةً (مفرد صحيح الآخر وجمع تكسير).</li>
+                        <li><strong class="text-white">الياء:</strong> مصغِ<span class="text-accent">ين</span> (جمع مذكر سالم).</li>
+                        <li><strong class="text-white">الكسرة:</strong> مسرعات<span class="text-accent">ِ</span> (جمع مؤنث سالم).</li>
+                        <li><strong class="text-white">رابط الحال الجملة:</strong> الضمير <span class="text-accent">أو</span> الواو <span class="text-accent">أو</span> هما معاً.</li>
+                        <li><strong class="text-white">تعدد الحال:</strong> رجعَ الغائبُ <span class="text-accent">سالماً غانماً</span>.</li>
+                    </ul>
+                </div>
+
+                <!-- تنبيه الفخ الشهير -->
+                <div class="bg-rose-500/10 p-5 rounded-2xl border border-rose-500/40 lg:col-span-2">
+                    <h3 class="text-xl font-bold text-rose-400 mb-3 border-b border-white/10 pb-2">⚠️ فخ الحال والنعت</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-300">
+                        <div>
+                            <strong class="text-white block mb-1">الحال:</strong>
+                            <p>جاء <span class="text-accent font-bold">المعلمُ</span> مبتسماً. ← صاحبه معرفة (المعلم) ← <span class="text-accent">الوصف = حال</span></p>
+                        </div>
+                        <div>
+                            <strong class="text-white block mb-1">النعت (إذا كان صاحبه نكرة):</strong>
+                            <p>جاء <span class="text-rose-400 font-bold">طالبٌ</span> مجتهدٌ. ← صاحبه نكرة (طالب) ← <span class="text-rose-400">الوصف = نعت</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-4">
+                <button onclick="showScreen('screen-home')" class="btn-hover-effect bg-white/10 border border-white/20 text-white px-6 py-2 rounded-full font-bold text-lg">رجوع</button>
+                <button onclick="startGame()" class="btn-hover-effect text-dark px-8 py-2 rounded-full font-bold text-lg" style="background: linear-gradient(45deg, #00b09b, #96c93d);">العب الآن! ⚡</button>
+            </div>
+        </div>
+
+        <!-- 3. Game Screen -->
+        <div id="screen-game" class="hidden flex flex-col w-full h-full relative pop-in">
+            <div class="flex justify-between items-center bg-black/30 p-4 rounded-xl border border-white/10 mb-8 backdrop-blur-sm">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">🏆</span>
+                    <span class="text-xl font-bold text-accent" id="score-display">0</span>
+                </div>
+                <div id="difficulty-badge" class="px-3 py-1 rounded-full text-xs font-bold badge-easy">سهل</div>
+                <div class="text-lg font-semibold text-gray-300">
+                    السؤال: <span id="question-counter" class="text-white font-bold">1</span> / <span id="total-questions">20</span>
+                </div>
+            </div>
+            <div class="bg-white/10 border border-white/20 rounded-2xl p-8 shadow-xl text-center relative mb-8 backdrop-blur-md" id="question-card">
+                <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-1 rounded-full text-sm font-bold shadow-md" style="background: linear-gradient(45deg, #00b09b, #96c93d); color: #0f2027;" id="question-type-badge">
+                    التحدي
+                </div>
+                <h3 class="text-2xl md:text-3xl font-bold text-white mb-4 mt-4 leading-relaxed" id="question-text">جاري التحميل...</h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="options-container"></div>
+        </div>
+
+        <!-- 4. Feedback Overlay -->
+        <div id="feedback-overlay" class="hidden absolute inset-0 bg-[#0f2027]/90 backdrop-blur-md z-50 flex flex-col items-center justify-center p-6 rounded-3xl pop-in">
+            <div id="feedback-icon" class="text-7xl mb-4">✨</div>
+            <h2 id="feedback-title" class="text-4xl font-bold mb-4 text-white">إجابة صحيحة!</h2>
+            <div class="bg-black/40 border border-white/10 p-6 rounded-xl max-w-lg w-full mb-8 text-center shadow-lg">
+                <p id="feedback-text" class="text-lg text-gray-200 leading-relaxed"></p>
+            </div>
+            <button onclick="nextQuestion()" class="btn-hover-effect text-dark px-10 py-3 rounded-full font-bold text-xl" style="background: linear-gradient(45deg, #00b09b, #96c93d);">السؤال التالي ❯</button>
+        </div>
+
+        <!-- 5. Result Screen -->
+        <div id="screen-result" class="hidden flex flex-col items-center justify-center text-center space-y-6 py-8 pop-in">
+            <div class="text-8xl mb-4" id="result-emoji">🏅</div>
+            <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-2">اكتمل التحدي!</h2>
+            <div class="bg-black/30 border-2 border-accent/50 rounded-full w-40 h-40 flex flex-col items-center justify-center mx-auto mt-6 mb-2">
+                <span class="text-sm text-gray-400 mb-1">نتيجة التحدي</span>
+                <span class="text-4xl font-bold text-accent" id="final-score">200/200</span>
+            </div>
+            <h3 class="text-3xl font-bold text-white mt-2" id="result-title">التقييم</h3>
+            <div class="bg-white/5 border border-white/10 p-4 rounded-xl mt-4 max-w-lg w-full">
+                <p class="text-gray-300 text-lg" id="result-message">جاري الحساب...</p>
+            </div>
+            <div class="flex gap-4 mt-6 flex-wrap justify-center">
+                <a href="javascript:history.back()" class="btn-hover-effect bg-white/10 border border-white/20 text-white px-6 py-3 rounded-full font-bold text-lg hover:bg-white/20">العودة للمسارات</a>
+                <button onclick="startGame()" class="btn-hover-effect text-dark px-8 py-3 rounded-full font-bold text-lg" style="background: linear-gradient(45deg, #00b09b, #96c93d);">العب مرة أخرى ↺</button>
+            </div>
+        </div>
+
+    </div><!-- /main-container -->
+
+    <script>
+    // ============================================================
+    //  AUDIO ENGINE
+    // ============================================================
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        if (type === 'correct') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(1046.50, audioCtx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+        } else if (type === 'wrong') {
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.3);
+            gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+        } else if (type === 'win') {
+            [440, 554.37, 659.25, 880].forEach((freq, i) => {
+                const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+                o.connect(g); g.connect(audioCtx.destination); o.type = 'triangle'; o.frequency.value = freq;
+                g.gain.setValueAtTime(0.3, audioCtx.currentTime + i * 0.15);
+                g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.15 + 0.3);
+                o.start(audioCtx.currentTime + i * 0.15); o.stop(audioCtx.currentTime + i * 0.15 + 0.3);
+            });
+        }
+    }
+
+    // ============================================================
+    //  AUTH / LOCAL STORAGE
+    // ============================================================
+    function checkLogin() {
+        const name = localStorage.getItem('bahaa_student_name');
+        const total = localStorage.getItem('bahaa_total_score') || '0';
+        if (!name) {
+            document.getElementById('login-overlay').classList.remove('hidden');
+        } else {
+            document.getElementById('welcome-player-name').textContent = name;
+            document.getElementById('home-total-score').textContent = total;
+            document.getElementById('screen-home').classList.remove('hidden');
+        }
+    }
+    function savePlayerName() {
+        const name = document.getElementById('player-name-input').value.trim();
+        if (name.length < 2) { document.getElementById('login-error').classList.remove('hidden'); return; }
+        localStorage.setItem('bahaa_student_name', name);
+        if (!localStorage.getItem('bahaa_total_score')) localStorage.setItem('bahaa_total_score', '0');
+        document.getElementById('login-overlay').classList.add('hidden');
+        document.getElementById('welcome-player-name').textContent = name;
+        document.getElementById('home-total-score').textContent = localStorage.getItem('bahaa_total_score');
+        document.getElementById('screen-home').classList.remove('hidden');
+        document.getElementById('screen-home').classList.add('pop-in');
+    }
+    window.addEventListener('DOMContentLoaded', checkLogin);
+
+    // ============================================================
+    //  QUESTIONS BANK  (5 سهل • 5 متوسط • 10 صعب)
+    // ============================================================
+    const gameQuestions = [
+
+        // ─────────────────────────────────────────
+        //  سهل (١–٥)
+        // ─────────────────────────────────────────
+        {
+            level: "سهل",
+            type: "تعريف الحال",
+            question: "الحال في النحو العربي هو وصف _____ يأتي لبيان هيئة صاحبه وقت وقوع الفعل.",
+            options: ["معرفة ومرفوع", "نكرة ومنصوب", "مجرور بحرف جر", "مرفوع دائماً"],
+            correct: 1,
+            hint: "الحال وصف نكرة منصوب دائماً، مثل: جاء الطالبُ مسرعاً. (مسرعاً) نكرة منصوبة."
+        },
+        {
+            level: "سهل",
+            type: "حكم الحال",
+            question: "ما الحكم الإعرابي للحال في اللغة العربية؟",
+            options: ["الرفع دائماً", "الجر دائماً", "النصب دائماً", "يتبع ما قبله"],
+            correct: 2,
+            hint: "الحال منصوب دائماً، وعلامة نصبه الفتحة إذا كان مفرداً صحيح الآخر. مثل: عاد المسافرُ سالماً."
+        },
+        {
+            level: "سهل",
+            type: "تحديد الحال",
+            question: "حدِّد الحال في جملة: (عاد الجنديُّ منتصراً)",
+            options: ["عاد", "الجنديُّ", "منتصراً", "لا حال في الجملة"],
+            correct: 2,
+            hint: "منتصراً: حال منصوب بالفتحة يُبيّن هيئة الجندي وقت عودته. نسأل: كيف عاد الجندي؟ منتصراً."
+        },
+        {
+            level: "سهل",
+            type: "شرط صاحب الحال",
+            question: "يُشترط في صاحب الحال أن يكون:",
+            options: ["نكرةً دائماً", "معرفةً دائماً", "مجروراً بحرف الجر", "مرفوعاً بالضمة"],
+            correct: 1,
+            hint: "صاحب الحال يجب أن يكون معرفة: اسم علم، أو مُعرَّف بـ(ال)، أو مضاف إلى معرفة."
+        },
+        {
+            level: "سهل",
+            type: "السؤال عن الحال",
+            question: "نسأل عن الحال في الجملة بـ:",
+            options: ["ماذا؟", "من؟", "كيف؟", "أين؟"],
+            correct: 2,
+            hint: "نقول: كيف جاء المعلم؟ مبتسماً. فالجواب (مبتسماً) هو الحال."
+        },
+
+        // ─────────────────────────────────────────
+        //  متوسط (٦–١٠)
+        // ─────────────────────────────────────────
+        {
+            level: "متوسط",
+            type: "أنواع الحال",
+            question: "الحال في جملة (رأيتُ الطالبَ يكتبُ) من أيّ أنواع الحال؟",
+            options: ["حال مفرد منصوب", "حال جملة اسمية", "حال جملة فعلية", "حال شبه جملة ظرفية"],
+            correct: 2,
+            hint: "(يكتبُ) جملة فعلية بأكملها وقعت حالاً من (الطالبَ)، وصاحبها معرفة هو المفعول به."
+        },
+        {
+            level: "متوسط",
+            type: "رابط الحال",
+            question: "في جملة (جاء الرجلُ وهو يبتسمُ)، ما الرابط الذي يربط الحال بصاحبه؟",
+            options: ["الضمير (هو) فقط", "الواو فقط", "الواو والضمير (هو) معاً", "لا رابط في الجملة"],
+            correct: 2,
+            hint: "الواو = واو الحال، والضمير (هو) يعود على (الرجل). ويجوز أن يربط الحالَ أحدُهما أو كلاهما."
+        },
+        {
+            level: "متوسط",
+            type: "الحال من الضمير المتصل",
+            question: "في جملة (خرجتُ مسرعاً)، صاحب الحال هو:",
+            options: ["خرجتُ (الفعل)", "التاء المتصلة في (خرجتُ)", "مسرعاً", "ضمير منفصل غائب"],
+            correct: 1,
+            hint: "التاء في (خرجتُ) ضمير متصل في محل رفع فاعل، وهو صاحب الحال (من قام بالخروج مسرعاً)."
+        },
+        {
+            level: "متوسط",
+            type: "الحال شبه الجملة",
+            question: "في جملة (وجدتُ الكتابَ على الرفِّ)، شبه الجملة (على الرفِّ) تُعرب:",
+            options: ["مفعولاً به ثانياً", "حالاً شبه جملة من (الكتاب)", "متعلقة بالفعل فقط", "نعتاً للكتاب"],
+            correct: 1,
+            hint: "الجار والمجرور (على الرف) يبين مكان/هيئة الكتاب وقت الإيجاد، فهو حال شبه جملة وصاحبه (الكتاب)."
+        },
+        {
+            level: "متوسط",
+            type: "الحال الجملة الاسمية",
+            question: "في جملة (جاء المعلمُ وجهُهُ مشرقٌ)، ما الذي يعمل رابطاً يصل الحال بصاحبه؟",
+            options: ["الواو وحدها", "الضمير (الهاء في وجهه) وحده", "لا رابط في الجملة", "الواو والضمير غير موجودَين هنا"],
+            correct: 1,
+            hint: "الجملة الاسمية (وجهه مشرق) حال من (المعلم)، والهاء في (وجهه) ضمير يعود على المعلم فهو الرابط."
+        },
+
+        // ─────────────────────────────────────────
+        //  صعب (١١–٢٠)
+        // ─────────────────────────────────────────
+        {
+            level: "صعب",
+            type: "علامات النصب",
+            question: "في جملة (وقف الطلابُ مصغِينَ)، علامة نصب الحال (مصغين) هي:",
+            options: ["الفتحة لأنه مفرد", "الياء لأنه جمع مذكر سالم", "الكسرة لأنه جمع مؤنث", "حذف النون لأنه مثنى"],
+            correct: 1,
+            hint: "(مصغين) جمع مذكر سالم، وينصب بالياء نيابةً عن الفتحة، مثل: المسلمين، المعلمين."
+        },
+        {
+            level: "صعب",
+            type: "تمييز الحال من النعت",
+            question: "أيُّ الجملتين فيها (مجتهداً) حال وليس نعتاً؟",
+            options: [
+                "جاء طالبٌ مجتهداً",
+                "جاء الطالبُ مجتهداً",
+                "كلاهما حال",
+                "كلاهما نعت"
+            ],
+            correct: 1,
+            hint: "في الأولى (طالبٌ) نكرة → مجتهداً نعت. في الثانية (الطالبُ) معرفة → مجتهداً حال. الشرط: صاحب الحال معرفة."
+        },
+        {
+            level: "صعب",
+            type: "صاحب الحال من المجرور",
+            question: "في جملة (مررتُ بالطالبِ مجتهداً)، صاحب الحال (مجتهداً) هو:",
+            options: ["التاء في (مررتُ)", "حرف الجر (الباء)", "الطالبِ رغم كونه مجروراً", "ضمير مستتر في الفعل"],
+            correct: 2,
+            hint: "(الطالبِ) صاحب الحال وإن كان مجروراً، لأن الحال يبين هيئته. يجوز أن يكون صاحب الحال مجروراً."
+        },
+        {
+            level: "صعب",
+            type: "تعدد الحال",
+            question: "في جملة (رجعَ الغائبُ سالماً غانماً)، كم عدد الأحوال ومن صاحبها؟",
+            options: [
+                "حال واحدة فقط وصاحبها (الغائب)",
+                "حالان: (سالماً) و(غانماً)، وصاحبهما (الغائبُ)",
+                "حالان وصاحب كل حال مختلف",
+                "لا حال في الجملة"
+            ],
+            correct: 1,
+            hint: "تعدد الحال: يجوز أن يكون للفاعل الواحد أكثر من حال في نفس الجملة. (سالماً) حال أولى، (غانماً) حال ثانية."
+        },
+        {
+            level: "صعب",
+            type: "الحال من الضمير المستتر",
+            question: "في جملة (انطلقَ مبتسماً)، صاحب الحال هو:",
+            options: ["انطلقَ (الفعل)", "مبتسماً (الحال نفسه)", "ضمير مستتر تقديره (هو) في محل رفع فاعل", "لا صاحب لهذا الحال"],
+            correct: 2,
+            hint: "فعل (انطلق) فاعله ضمير مستتر تقديره (هو)، وهو صاحب الحال لأنه من قام بالانطلاق مبتسماً."
+        },
+        {
+            level: "صعب",
+            type: "الحال الجملة (رابط الواو والضمير)",
+            question: "أيُّ الجمل الآتية فيها حال جملة اسمية مع رابطَي الواو والضمير معاً؟",
+            options: [
+                "جاء المعلمُ مبتسماً",
+                "فرَّ اللصُّ والشرطةُ تطارده",
+                "رأيتُه يقرأ",
+                "وقف الجنديُّ أمامَ العلمِ"
+            ],
+            correct: 1,
+            hint: "في (فرَّ اللصُّ والشرطةُ تطارده): الواو = واو الحال، والضمير (الهاء في تطارده) يعود على اللص. كلاهما رابط."
+        },
+        {
+            level: "صعب",
+            type: "الحال شبه الجملة الظرفية",
+            question: "في جملة (جاء الجنديُّ على صهوةِ جوادٍ)، الجار والمجرور (على صهوة جواد) يُعرب:",
+            options: [
+                "مفعولاً به",
+                "متعلقاً بالفعل (جاء) فقط",
+                "حالاً شبه جملة من (الجنديّ)",
+                "خبراً لمبتدأ محذوف"
+            ],
+            correct: 2,
+            hint: "شبه الجملة (على صهوة جواد) تبين هيئة الجندي وقت مجيئه، فهي حال شبه جملة وصاحبها (الجنديُّ)."
+        },
+        {
+            level: "صعب",
+            type: "تعدد الحال (جملة فعلية)",
+            question: "في جملة (خرج الأطفالُ يلعبون ويضحكون)، كم حالاً في الجملة؟",
+            options: ["حال واحدة فقط", "حالان", "ثلاثة أحوال", "لا حال فيها لأن الفعل جمع"],
+            correct: 1,
+            hint: "(يلعبون) حال أولى جملة فعلية من (الأطفال)، و(يضحكون) حال ثانية جملة فعلية منهم أيضاً. هذا تعدد الحال."
+        },
+        {
+            level: "صعب",
+            type: "فخ: الحال أم النعت؟",
+            question: "في جملة (جاء طالبٌ يحملُ كتاباً)، كلمة (يحملُ كتاباً) تُعرب:",
+            options: [
+                "حالاً جملة فعلية من (طالب)",
+                "نعتاً جملة فعلية لـ(طالب)",
+                "خبراً لمبتدأ محذوف",
+                "مفعولاً به ثانياً"
+            ],
+            correct: 1,
+            hint: "صاحب الوصف (طالبٌ) نكرة، والوصف الجملة لما بعد النكرة = نعت لا حال. لو كان (الطالبُ) لكانت حالاً."
+        },
+        {
+            level: "صعب",
+            type: "إعراب تفصيلي شامل",
+            question: "في جملة (عاد الفريقُ وهو فائزٌ)، ما الإعراب الأدق لـ(وهو فائزٌ)؟",
+            options: [
+                "جملة اسمية في محل رفع خبر",
+                "جملة اسمية في محل نصب حال من (الفريقُ) والرابط الواو والضمير",
+                "جملة اسمية في محل جر بحرف الجر",
+                "جملة فعلية في محل نصب حال"
+            ],
+            correct: 1,
+            hint: "(وهو فائز): الواو = واو الحال، (هو) ضمير يعود على الفريق. الجملة الاسمية (هو فائز) في محل نصب حال من (الفريق)."
+        }
+    ];
+
+    // ============================================================
+    //  GAME ENGINE
+    // ============================================================
+    let orderedQuestions = [];
+    let currentIndex = 0;
+    let score = 0;
+    let canAnswer = false;
+
+    function showScreen(id) {
+        ['screen-home', 'screen-lesson', 'screen-game', 'screen-result', 'feedback-overlay'].forEach(s => {
+            document.getElementById(s).classList.add('hidden');
+        });
+        document.getElementById(id).classList.remove('hidden');
+    }
+
+    function startGame() {
+        // نرتب الأسئلة: سهل أولاً ثم متوسط ثم صعب (مع خلط داخل كل مستوى)
+        const easy   = shuffle(gameQuestions.filter(q => q.level === 'سهل'));
+        const medium = shuffle(gameQuestions.filter(q => q.level === 'متوسط'));
+        const hard   = shuffle(gameQuestions.filter(q => q.level === 'صعب'));
+        orderedQuestions = [...easy, ...medium, ...hard];
+        currentIndex = 0; score = 0;
+        document.getElementById('score-display').textContent = '0';
+        document.getElementById('total-questions').textContent = orderedQuestions.length;
+        showScreen('screen-game');
+        loadQuestion();
+    }
+
+    function shuffle(arr) { return [...arr].sort(() => 0.5 - Math.random()); }
+
+    function loadQuestion() {
+        canAnswer = true;
+        const q = orderedQuestions[currentIndex];
+        document.getElementById('question-counter').textContent = currentIndex + 1;
+        document.getElementById('question-type-badge').textContent = q.type;
+        document.getElementById('question-text').textContent = q.question;
+
+        // شارة الصعوبة
+        const badge = document.getElementById('difficulty-badge');
+        badge.textContent = q.level;
+        badge.className = 'px-3 py-1 rounded-full text-xs font-bold ' +
+            (q.level === 'سهل' ? 'badge-easy' : q.level === 'متوسط' ? 'badge-medium' : 'badge-hard');
+
+        // بطاقة السؤال: لون الحدود حسب الصعوبة
+        const card = document.getElementById('question-card');
+        card.className = 'bg-white/10 border border-white/20 rounded-2xl p-8 shadow-xl text-center relative mb-8 backdrop-blur-md ' +
+            (q.level === 'سهل' ? 'difficulty-easy' : q.level === 'متوسط' ? 'difficulty-medium' : 'difficulty-hard');
+
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+        const letters = ['أ', 'ب', 'ج', 'د'];
+        q.options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'btn-hover-effect bg-black/30 hover:bg-black/50 border border-white/10 text-white py-4 px-6 rounded-xl text-lg text-right flex justify-between w-full shadow-md';
+            btn.innerHTML = `<span>${opt}</span><span class="w-8 h-8 rounded-full border border-accent/50 flex items-center justify-center text-sm font-bold text-accent flex-shrink-0 mr-2">${letters[i]}</span>`;
+            btn.onclick = () => handleAnswer(i, btn);
+            container.appendChild(btn);
+        });
+    }
+
+    function handleAnswer(selected, btn) {
+        if (!canAnswer) return;
+        canAnswer = false;
+        const q = orderedQuestions[currentIndex];
+        const allBtns = document.getElementById('options-container').querySelectorAll('button');
+        allBtns.forEach(b => b.disabled = true);
+
+        const points = q.level === 'سهل' ? 5 : q.level === 'متوسط' ? 10 : 15;
+
+        if (selected === q.correct) {
+            playSound('correct');
+            btn.classList.add('correct-bg');
+            score += points;
+            document.getElementById('score-display').textContent = score;
+            showFeedback(true, q.hint, points);
+        } else {
+            playSound('wrong');
+            btn.classList.add('wrong-bg', 'shake');
+            allBtns[q.correct].classList.add('correct-bg');
+            showFeedback(false, q.hint, 0);
+        }
+    }
+
+    function showFeedback(isCorrect, hint, pts) {
+        setTimeout(() => {
+            document.getElementById('feedback-overlay').classList.remove('hidden');
+            document.getElementById('feedback-icon').textContent = isCorrect ? '✅' : '💡';
+            document.getElementById('feedback-title').textContent = isCorrect ? `أحسنت! +${pts} نقطة` : 'فرصة للتعلم';
+            document.getElementById('feedback-title').className = isCorrect
+                ? 'text-4xl font-bold mb-4 text-[#00ffcc]'
+                : 'text-4xl font-bold mb-4 text-[#ffcc00]';
+            document.getElementById('feedback-text').innerHTML = `<strong class="text-white">التوضيح:</strong> ${hint}`;
+        }, 700);
+    }
+
+    function nextQuestion() {
+        document.getElementById('feedback-overlay').classList.add('hidden');
+        currentIndex++;
+        if (currentIndex < orderedQuestions.length) loadQuestion();
+        else endGame();
+    }
+
+    function endGame() {
+        playSound('win');
+        showScreen('screen-result');
+
+        const maxScore = 5*5 + 5*10 + 10*15; // 25 + 50 + 150 = 225
+        document.getElementById('final-score').textContent = `${score} / ${maxScore}`;
+
+        const pct = (score / maxScore) * 100;
+        const titleEl = document.getElementById('result-title');
+        const msgEl   = document.getElementById('result-message');
+        const emoji   = document.getElementById('result-emoji');
+
+        if (pct >= 85) {
+            emoji.textContent = '👑';
+            titleEl.textContent = 'خبير الحال النحوي!';
+            titleEl.className = 'text-3xl font-bold mt-2 text-yellow-400';
+            msgEl.innerHTML = `أتقنتَ قاعدة الحال بامتياز! من التعريف إلى الفخاخ الصعبة. أنت مستعد لأصعب التحديات!`;
+        } else if (pct >= 60) {
+            emoji.textContent = '🌟';
+            titleEl.textContent = 'مستوى متقدم!';
+            titleEl.className = 'text-3xl font-bold mt-2 text-[#00ffcc]';
+            msgEl.innerHTML = `مستواك ممتاز في الأساسيات، ولكنك تحتاج لمزيد من التدريب على الحال الجملة وتعدد الحال.`;
+        } else {
+            emoji.textContent = '🌱';
+            titleEl.textContent = 'في طريقك للإتقان!';
+            titleEl.className = 'text-3xl font-bold mt-2 text-[#ffcc00]';
+            msgEl.innerHTML = `لا تيأس! راجع القاعدة مرة أخرى وأعِد التحدي. كل مراجعة تقربك من الاحتراف.`;
+        }
+
+        // نظام النقاط التراكمي
+        let total = parseInt(localStorage.getItem('bahaa_total_score') || '0');
+        total += score;
+        localStorage.setItem('bahaa_total_score', total);
+        document.getElementById('home-total-score').textContent = total;
+
+        msgEl.innerHTML += `<br><br>🏆 نقاطك في هذا التحدي: <span class="text-accent font-bold">${score}</span> / ${maxScore}<br>إجمالي نقاطك التراكمية: <span class="text-accent font-bold text-xl">${total}</span>`;
+    }
+    </script>
+</body>
+</html>
