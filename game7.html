@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحدي البلاغة: التقديم والتأخير - الأستاذ بهاء المقداد</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Tajawal', 'sans-serif'] },
+                    colors: { primary: '#0f2027', secondary: '#203a43', accent: '#00ffcc', dark: '#0f2027' },
+                    animation: { 'bounce-slow': 'bounce 3s infinite' }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #ffffff; min-height: 100vh; overflow-x: hidden;
+            display: flex; align-items: center; justify-content: center; position: relative;
+        }
+        body::before {
+            content: ''; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); z-index: -2;
+        }
+        .bg-circle { position: fixed; border-radius: 50%; background: radial-gradient(circle, rgba(0,255,200,0.15) 0%, rgba(0,0,0,0) 70%); z-index: -1; pointer-events: none; }
+        .circle1 { width: 600px; height: 600px; top: -200px; right: -200px; }
+        .circle2 { width: 500px; height: 500px; bottom: -150px; left: -150px; background: radial-gradient(circle, rgba(255,100,150,0.1) 0%, rgba(0,0,0,0) 70%); }
+        .glass-panel { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        .btn-hover-effect { transition: all 0.3s ease; }
+        .btn-hover-effect:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+        .pop-in { animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .correct-bg { background: linear-gradient(45deg, #00b09b, #96c93d) !important; color: white !important; border-color: transparent !important; }
+        .wrong-bg { background: linear-gradient(45deg, #cb2d3e, #ef473a) !important; color: white !important; border-color: transparent !important; }
+        .back-home-btn {
+            position: absolute; top: 20px; right: 20px; background: rgba(255, 255, 255, 0.1); color: #fff;
+            padding: 8px 16px; border-radius: 20px; text-decoration: none; font-size: 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s ease; z-index: 50; display: flex; align-items: center; gap: 5px;
+        }
+        .back-home-btn:hover { background: rgba(255, 255, 255, 0.2); transform: translateX(-5px); }
+        .difficulty-easy   { border-right: 4px solid #22c55e; }
+        .difficulty-medium { border-right: 4px solid #f59e0b; }
+        .difficulty-hard   { border-right: 4px solid #ef4444; }
+        .badge-easy   { background: rgba(34,197,94,0.2); color: #86efac; }
+        .badge-medium { background: rgba(245,158,11,0.2); color: #fcd34d; }
+        .badge-hard   { background: rgba(239,68,68,0.2); color: #fca5a5; }
+    </style>
+</head>
+<body class="p-4">
+
+    <div class="bg-circle circle1"></div>
+    <div class="bg-circle circle2"></div>
+
+    <!-- Login Overlay -->
+    <div id="login-overlay" class="fixed inset-0 bg-[#0f2027]/95 backdrop-blur-xl z-[100] flex flex-col items-center justify-center p-6 hidden">
+        <div class="bg-white/10 border border-white/20 p-8 rounded-3xl max-w-md w-full text-center shadow-2xl pop-in">
+            <div class="text-6xl mb-4 drop-shadow-lg">✨</div>
+            <h2 class="text-3xl font-bold text-white mb-2">تحدي التقديم والتأخير!</h2>
+            <p class="text-gray-300 mb-6">أدخل اسمك الكريم لتبدأ رحلتك مع أسرار التقديم والتأخير.</p>
+            <input type="text" id="player-name-input" placeholder="اسمك الكريم..." class="w-full bg-black/30 border border-accent/50 text-white px-4 py-3 rounded-xl mb-4 focus:outline-none focus:border-accent text-center text-lg">
+            <p id="login-error" class="text-red-400 text-sm mb-4 hidden">أرجوك اكتب اسمك لتبدأ التحدي!</p>
+            <button onclick="savePlayerName()" class="w-full text-dark px-8 py-3 rounded-xl font-bold text-xl shadow-[0_5px_15px_rgba(0,176,155,0.4)] transition-transform hover:scale-105" style="background: linear-gradient(45deg, #00b09b, #96c93d);">دخول للتحدي 🚀</button>
+        </div>
+    </div>
+
+    <a href="javascript:history.back()" class="back-home-btn">
+        <span>⬅️</span> العودة للخلف
+    </a>
+
+    <!-- Main Container -->
+    <div class="glass-panel rounded-3xl w-full max-w-5xl p-6 md:p-10 relative z-10" id="main-container">
+
+        <!-- 1. Home Screen -->
+        <div id="screen-home" class="text-center flex flex-col items-center justify-center space-y-8 py-10 pop-in hidden">
+            <div class="inline-block bg-white/10 border border-accent/30 px-6 py-2 rounded-full">
+                <span class="text-gray-300">أهلاً بالبليغ:</span>
+                <span id="welcome-player-name" class="font-bold text-accent mr-1">...</span>
+            </div>
+            <div class="text-6xl drop-shadow-[0_0_15px_rgba(0,255,200,0.5)]">⚖️</div>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-white tracking-wide drop-shadow-md">التقديم والتأخير</h1>
+            <h2 class="text-xl md:text-2xl text-accent font-semibold">الاختصاص • التشويق • التعظيم • تعجيل المسرة</h2>
+            <p class="text-gray-300 max-w-lg mx-auto text-lg leading-relaxed">
+                20 سؤالاً متدرج الصعوبة لاختبار ذائقتك وفهمك للأسرار البلاغية وراء ترتيب الكلمات. هل أنت مستعد للغوص في المعاني؟
+            </p>
+            <!-- مؤشر الصعوبة -->
+            <div class="flex gap-4 justify-center flex-wrap">
+                <div class="flex items-center gap-2 bg-green-500/10 border border-green-500/30 px-4 py-2 rounded-full">
+                    <span class="w-3 h-3 rounded-full bg-green-400 inline-block"></span>
+                    <span class="text-green-300 text-sm font-bold">سهل × 5</span>
+                </div>
+                <div class="flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 px-4 py-2 rounded-full">
+                    <span class="w-3 h-3 rounded-full bg-amber-400 inline-block"></span>
+                    <span class="text-amber-300 text-sm font-bold">متوسط × 5</span>
+                </div>
+                <div class="flex items-center gap-2 bg-red-500/10 border border-red-500/30 px-4 py-2 rounded-full">
+                    <span class="w-3 h-3 rounded-full bg-red-400 inline-block"></span>
+                    <span class="text-red-300 text-sm font-bold">صعب × 10</span>
+                </div>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-4 mt-4 w-full justify-center">
+                <button onclick="showScreen('screen-lesson')" class="btn-hover-effect bg-white/10 border border-white/20 text-white hover:bg-white/20 px-8 py-3 rounded-full font-bold text-lg flex items-center justify-center gap-2">
+                    📖 مراجعة القاعدة
+                </button>
+                <button onclick="startGame()" class="btn-hover-effect text-dark px-8 py-3 rounded-full font-bold text-lg flex items-center justify-center gap-2 shadow-[0_5px_15px_rgba(0,176,155,0.4)]" style="background: linear-gradient(45deg, #00b09b, #96c93d);">
+                    ⚡ ابدأ التحدي
+                </button>
+            </div>
+            <div class="text-gray-400 text-sm">
+                نقاطك التراكمية: <span id="home-total-score" class="font-bold text-accent">0</span> 🏆
+            </div>
+        </div>
+
+        <!-- 2. Lesson Screen -->
+        <div id="screen-lesson" class="hidden flex flex-col items-center justify-center w-full pop-in">
+            <h2 class="text-3xl font-bold text-accent mb-6 text-center">أسرار التقديم والتأخير 📖</h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 w-full text-right mb-8 text-sm md:text-base">
+
+                <!-- 1. الاختصاص -->
+                <div class="bg-black/20 p-5 rounded-2xl border border-accent/30 shadow-[0_0_15px_rgba(0,255,200,0.05)]">
+                    <h3 class="text-xl font-bold text-accent mb-3 border-b border-white/10 pb-2">1. الاختصاص (القصر)</h3>
+                    <ul class="list-disc list-inside text-gray-300 space-y-2">
+                        <li><strong class="text-white">المعنى:</strong> قصر الحكم على الشيء المذكور ونفيه عما سواه.</li>
+                        <li><strong class="text-white">طريقته:</strong> تقديم المعمول (كالمفعول به أو الجار والمجرور) على عامله (الفعل).</li>
+                        <li><strong class="text-white">مثال:</strong> <span class="text-accent">{إِيَّاكَ نَعْبُدُ}</span>. (قصر العبادة على الله وحده).</li>
+                        <li><strong class="text-white">مثال:</strong> <span class="text-accent">{وَللهِ مُلْكُ السَّمَاوَاتِ}</span>. (لا لغيره).</li>
+                    </ul>
+                </div>
+
+                <!-- 2. التشويق -->
+                <div class="bg-black/20 p-5 rounded-2xl border border-white/10">
+                    <h3 class="text-xl font-bold text-amber-300 mb-3 border-b border-white/10 pb-2">2. التشويق</h3>
+                    <ul class="list-disc list-inside text-gray-300 space-y-2">
+                        <li><strong class="text-white">المعنى:</strong> إثارة فضول السامع لمعرفة بقية الكلام المتأخر.</li>
+                        <li><strong class="text-white">طريقته:</strong> تقديم لفظ مبهم، أو مجمل كالأعداد، أو شبه جملة غامضة.</li>
+                        <li><strong class="text-white">مثال:</strong> <span class="text-accent">ثلاثةٌ</span> تشرق الدنيا ببهجتها..</li>
+                        <li><strong class="text-white">مثال:</strong> <span class="text-accent">تحت الركامِ</span> حياةٌ نابضة.</li>
+                    </ul>
+                </div>
+
+                <!-- 3. التعظيم -->
+                <div class="bg-black/20 p-5 rounded-2xl border border-rose-400/30">
+                    <h3 class="text-xl font-bold text-rose-400 mb-3 border-b border-white/10 pb-2">3. التعظيم</h3>
+                    <ul class="list-disc list-inside text-gray-300 space-y-2">
+                        <li><strong class="text-white">المعنى:</strong> إبراز القيمة العالية أو القدسية أو الشرف للمُتحدَّث عنه فوراً.</li>
+                        <li><strong class="text-white">طريقته:</strong> تقديم اللفظ الذي يحمل صفة العظمة والمكانة.</li>
+                        <li><strong class="text-white">مثال:</strong> <span class="text-accent">عظيمٌ</span> أنت يا وطني.</li>
+                        <li><strong class="text-white">مثال:</strong> <span class="text-accent">في قلوبنا</span> رسولُ الله.</li>
+                    </ul>
+                </div>
+
+                <!-- 4. تعجيل المسرة -->
+                <div class="bg-black/20 p-5 rounded-2xl border border-white/10">
+                    <h3 class="text-xl font-bold text-green-400 mb-3 border-b border-white/10 pb-2">4. تعجيل المسرّة</h3>
+                    <ul class="list-disc list-inside text-gray-300 space-y-2">
+                        <li><strong class="text-white">المعنى:</strong> إدخال الفرح والسرور الفوري على قلب مستمع يترقب خبراً.</li>
+                        <li><strong class="text-white">طريقته:</strong> تقديم اللفظ السعيد والمُفرِح في بداية الجملة.</li>
+                        <li><strong class="text-white">مثال:</strong> <span class="text-accent">الناجحُ</span> أنت (لطالب ينتظر نتيجته).</li>
+                        <li><strong class="text-white">مثال:</strong> <span class="text-accent">العفوُ</span> عنك صدر (لسجين مكروب).</li>
+                    </ul>
+                </div>
+
+                <!-- تنبيه -->
+                <div class="bg-white/5 p-5 rounded-2xl border border-gray-400/40 lg:col-span-2 text-center">
+                    <h3 class="text-lg font-bold text-white mb-2">💡 تذكّر دائماً</h3>
+                    <p class="text-gray-300">التقديم والتأخير ليس تغييراً عشوائياً، بل هو <span class="text-accent font-bold">توجيه نفسي وعقلي</span> للمتلقي ليقع المعنى في نفسه موقعاً دقيقاً مقصوداً من المتكلم.</p>
+                </div>
+            </div>
+
+            <div class="flex gap-4">
+                <button onclick="showScreen('screen-home')" class="btn-hover-effect bg-white/10 border border-white/20 text-white px-6 py-2 rounded-full font-bold text-lg">رجوع</button>
+                <button onclick="startGame()" class="btn-hover-effect text-dark px-8 py-2 rounded-full font-bold text-lg" style="background: linear-gradient(45deg, #00b09b, #96c93d);">العب الآن! ⚡</button>
+            </div>
+        </div>
+
+        <!-- 3. Game Screen -->
+        <div id="screen-game" class="hidden flex flex-col w-full h-full relative pop-in">
+            <div class="flex justify-between items-center bg-black/30 p-4 rounded-xl border border-white/10 mb-8 backdrop-blur-sm">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">🏆</span>
+                    <span class="text-xl font-bold text-accent" id="score-display">0</span>
+                </div>
+                <div id="difficulty-badge" class="px-3 py-1 rounded-full text-xs font-bold badge-easy">سهل</div>
+                <div class="text-lg font-semibold text-gray-300">
+                    السؤال: <span id="question-counter" class="text-white font-bold">1</span> / <span id="total-questions">20</span>
+                </div>
+            </div>
+            <div class="bg-white/10 border border-white/20 rounded-2xl p-8 shadow-xl text-center relative mb-8 backdrop-blur-md" id="question-card">
+                <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-1 rounded-full text-sm font-bold shadow-md" style="background: linear-gradient(45deg, #00b09b, #96c93d); color: #0f2027;" id="question-type-badge">
+                    التحدي
+                </div>
+                <h3 class="text-2xl md:text-3xl font-bold text-white mb-4 mt-4 leading-relaxed" id="question-text">جاري التحميل...</h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="options-container"></div>
+        </div>
+
+        <!-- 4. Feedback Overlay -->
+        <div id="feedback-overlay" class="hidden absolute inset-0 bg-[#0f2027]/90 backdrop-blur-md z-50 flex flex-col items-center justify-center p-6 rounded-3xl pop-in">
+            <div id="feedback-icon" class="text-7xl mb-4">✨</div>
+            <h2 id="feedback-title" class="text-4xl font-bold mb-4 text-white">إجابة صحيحة!</h2>
+            <div class="bg-black/40 border border-white/10 p-6 rounded-xl max-w-lg w-full mb-8 text-center shadow-lg">
+                <p id="feedback-text" class="text-lg text-gray-200 leading-relaxed"></p>
+            </div>
+            <button onclick="nextQuestion()" class="btn-hover-effect text-dark px-10 py-3 rounded-full font-bold text-xl" style="background: linear-gradient(45deg, #00b09b, #96c93d);">السؤال التالي ❯</button>
+        </div>
+
+        <!-- 5. Result Screen -->
+        <div id="screen-result" class="hidden flex flex-col items-center justify-center text-center space-y-6 py-8 pop-in">
+            <div class="text-8xl mb-4" id="result-emoji">🏅</div>
+            <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-2">اكتمل التحدي!</h2>
+            <div class="bg-black/30 border-2 border-accent/50 rounded-full w-40 h-40 flex flex-col items-center justify-center mx-auto mt-6 mb-2">
+                <span class="text-sm text-gray-400 mb-1">نتيجة التحدي</span>
+                <span class="text-4xl font-bold text-accent" id="final-score">200/200</span>
+            </div>
+            <h3 class="text-3xl font-bold text-white mt-2" id="result-title">التقييم</h3>
+            <div class="bg-white/5 border border-white/10 p-4 rounded-xl mt-4 max-w-lg w-full">
+                <p class="text-gray-300 text-lg" id="result-message">جاري الحساب...</p>
+            </div>
+            <div class="flex gap-4 mt-6 flex-wrap justify-center">
+                <a href="javascript:history.back()" class="btn-hover-effect bg-white/10 border border-white/20 text-white px-6 py-3 rounded-full font-bold text-lg hover:bg-white/20">العودة للمسارات</a>
+                <button onclick="startGame()" class="btn-hover-effect text-dark px-8 py-3 rounded-full font-bold text-lg" style="background: linear-gradient(45deg, #00b09b, #96c93d);">العب مرة أخرى ↺</button>
+            </div>
+        </div>
+
+    </div><!-- /main-container -->
+
+    <script>
+    // ============================================================
+    //  AUDIO ENGINE
+    // ============================================================
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        if (type === 'correct') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(1046.50, audioCtx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+        } else if (type === 'wrong') {
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.3);
+            gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+        } else if (type === 'win') {
+            [440, 554.37, 659.25, 880].forEach((freq, i) => {
+                const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+                o.connect(g); g.connect(audioCtx.destination); o.type = 'triangle'; o.frequency.value = freq;
+                g.gain.setValueAtTime(0.3, audioCtx.currentTime + i * 0.15);
+                g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.15 + 0.3);
+                o.start(audioCtx.currentTime + i * 0.15); o.stop(audioCtx.currentTime + i * 0.15 + 0.3);
+            });
+        }
+    }
+
+    // ============================================================
+    //  AUTH / LOCAL STORAGE
+    // ============================================================
+    function checkLogin() {
+        const name = localStorage.getItem('bahaa_student_name');
+        const total = localStorage.getItem('bahaa_total_score') || '0';
+        if (!name) {
+            document.getElementById('login-overlay').classList.remove('hidden');
+        } else {
+            document.getElementById('welcome-player-name').textContent = name;
+            document.getElementById('home-total-score').textContent = total;
+            document.getElementById('screen-home').classList.remove('hidden');
+        }
+    }
+    function savePlayerName() {
+        const name = document.getElementById('player-name-input').value.trim();
+        if (name.length < 2) { document.getElementById('login-error').classList.remove('hidden'); return; }
+        localStorage.setItem('bahaa_student_name', name);
+        if (!localStorage.getItem('bahaa_total_score')) localStorage.setItem('bahaa_total_score', '0');
+        document.getElementById('login-overlay').classList.add('hidden');
+        document.getElementById('welcome-player-name').textContent = name;
+        document.getElementById('home-total-score').textContent = localStorage.getItem('bahaa_total_score');
+        document.getElementById('screen-home').classList.remove('hidden');
+        document.getElementById('screen-home').classList.add('pop-in');
+    }
+    window.addEventListener('DOMContentLoaded', checkLogin);
+
+    // ============================================================
+    //  QUESTIONS BANK (5 Easy, 5 Medium, 10 Hard)
+    // ============================================================
+    const gameQuestions = [
+        // ─────────────────────────────────────────
+        //  سهل (1–5)
+        // ─────────────────────────────────────────
+        {
+            level: "سهل", type: "تحديد الغرض",
+            question: "ما الغرض البلاغي من تقديم المفعول به في قوله تعالى: {إِيَّاكَ نَعْبُدُ}؟",
+            options: ["التعظيم", "التشويق", "الاختصاص (القصر)", "تعجيل المسرة"], correct: 2,
+            hint: "تقديم (إياك) يفيد قصر وحصر العبادة على الله وحده ونفيها عمن سواه."
+        },
+        {
+            level: "سهل", type: "تحديد الغرض",
+            question: "عندما نقول لطالب يترقب نتيجته بلهفة: (الناجحُ أنت)، الغرض من التقديم هو:",
+            options: ["التشويق", "تعجيل المسرة", "الاختصاص", "التعظيم"], correct: 1,
+            hint: "تقديم كلمة (الناجح) يفرح قلب الطالب فوراً قبل أن يسمع بقية الجملة، وهذا تعجيل للمسرة."
+        },
+        {
+            level: "سهل", type: "تحديد الغرض",
+            question: "الغرض من تقديم كلمة (عظيم) في قولنا: (عظيمٌ أنت يا وطني) هو:",
+            options: ["التعظيم", "التشويق", "الاختصاص", "تعجيل المسرة"], correct: 0,
+            hint: "تقديم الوصف (عظيم) يهدف لإبراز الشرف والمكانة العالية للوطن فوراً."
+        },
+        {
+            level: "سهل", type: "تحديد الغرض",
+            question: "في عبارة: (ثلاثةٌ تشرق الدنيا ببهجتها..)، غرض تقديم العدد المجمل هو:",
+            options: ["الاختصاص", "التعظيم", "تعجيل المسرة", "التشويق"], correct: 3,
+            hint: "العدد (ثلاثة) مبهم يثير فضول السامع وتطلعه لمعرفة هذه الثلاثة، وهذا هو التشويق."
+        },
+        {
+            level: "سهل", type: "تحديد الغرض",
+            question: "إذا أعلن القاضي للمتهم: (البراءةُ نلتَها)، فالغرض البلاغي من التقديم:",
+            options: ["تعجيل المسرة", "الاختصاص", "التشويق", "التعظيم"], correct: 0,
+            hint: "المتهم ينتظر هذا الخبر بفارغ الصبر، فتقديمه يعجل بإدخال الفرحة لقلبه وإنهاء توتره."
+        },
+        // ─────────────────────────────────────────
+        //  متوسط (6–10)
+        // ─────────────────────────────────────────
+        {
+            level: "متوسط", type: "فهم السياق",
+            question: "ما الغرض البلاغي في قوله تعالى: {وَللهِ مُلْكُ السَّمَاوَاتِ وَالأَرْضِ}؟",
+            options: ["التشويق", "الاختصاص", "التعظيم", "تعجيل المسرة"], correct: 1,
+            hint: "تقديم الخبر (لله) يفيد اختصاص الله وحده بالملك المطلق للكون ولا يشاركه فيه أحد."
+        },
+        {
+            level: "متوسط", type: "فهم السياق",
+            question: "قولنا: (اثنان لا يشبعان: طالبُ علمٍ وطالبُ مالٍ). تقديم كلمة (اثنان) يخدم غرض:",
+            options: ["التشويق", "التعظيم", "تعجيل المسرة", "الاختصاص"], correct: 0,
+            hint: "الإجمال بـ(اثنان) يمهد الذهن ويشوقه بانتظار التفصيل الذي سيليه."
+        },
+        {
+            level: "متوسط", type: "فهم السياق",
+            question: "عند قولنا: (مقدسٌ ترابُ القدس)، ما الغرض من تقديم كلمة (مقدس)؟",
+            options: ["تعجيل المسرة", "الاختصاص", "التعظيم", "التشويق"], correct: 2,
+            hint: "كلمة (مقدس) تحمل صفة الإجلال والعظمة، وتقديمها يبرز القيمة العالية للمكان مباشرة."
+        },
+        {
+            level: "متوسط", type: "فهم السياق",
+            question: "طبيب يدخل على مريض فيقول: (الشفاءُ عاجلك بإذن الله)، التقديم هنا لغرض:",
+            options: ["الاختصاص", "التعظيم", "التشويق", "تعجيل المسرة"], correct: 3,
+            hint: "الشفاء هو الكلمة التي ينتظرها المريض، فتقديمها يعجل براحته النفسية وسعادته."
+        },
+        {
+            level: "متوسط", type: "فهم السياق",
+            question: "ما الغرض من تقديم شبه الجملة في قوله تعالى: {إِلَى اللَّهِ مَرْجِعُكُمْ جَمِيعاً}؟",
+            options: ["الاختصاص", "التشويق", "تعجيل المسرة", "التعظيم"], correct: 0,
+            hint: "التقديم هنا يحصر الرجوع يوم القيامة لله وحده نافياً أي مرجع أو ملجأ لغيره."
+        },
+        // ─────────────────────────────────────────
+        //  صعب (11–20)
+        // ─────────────────────────────────────────
+        {
+            level: "صعب", type: "التمييز الدقيق",
+            question: "قال الشاعر: (ومن نكد الدنيا على الحر أن يرى.. عدواً له). تقديم شبه الجملة هنا يفيد:",
+            options: ["التعظيم", "الاختصاص", "التشويق", "تعجيل المسرة"], correct: 2,
+            hint: "تقديم شبه الجملة الطويل الذي يحمل معنى النكد يشوق السامع لمعرفة ما هو هذا النكد (أن يرى..)."
+        },
+        {
+            level: "صعب", type: "التمييز الدقيق",
+            question: "في قوله تعالى: {وَعَلَى اللَّهِ فَلْيَتَوَكَّلِ الْمُؤْمِنُونَ}، الغرض البلاغي من التقديم:",
+            options: ["التعظيم فقط", "التشويق", "الاختصاص (القصر)", "تعجيل المسرة"], correct: 2,
+            hint: "على الرغم من عظمة اسم الله، إلا أن البنية البلاغية (تقديم الجار والمجرور) تفيد حصر التوكل عليه وحده."
+        },
+        {
+            level: "صعب", type: "التمييز الدقيق",
+            question: "عندما نقول: (في قلوبنا رسولُ الله)، التقديم هنا يهدف بشكل رئيسي إلى:",
+            options: ["التشويق", "الاختصاص", "التعظيم", "تعجيل المسرة"], correct: 2,
+            hint: "تقديم مكانة النبي في القلب يبرز شدة توقيره وإجلاله ومحبته، وهو ما يندرج تحت التعظيم."
+        },
+        {
+            level: "صعب", type: "التمييز الدقيق",
+            question: "جملة: (العفوُ عنك صدر يا سجين). تقديم المبتدأ يفيد:",
+            options: ["تعجيل المسرة", "التشويق", "الاختصاص", "التعظيم"], correct: 0,
+            hint: "لأن السجين في حالة كرب، فالبدء بكلمة (العفو) يزيل همه فوراً ويسبق بقية التفاصيل."
+        },
+        {
+            level: "صعب", type: "التمييز الدقيق",
+            question: "في عبارة: (أربعةٌ تجلب الرزق: قيام الليل، والاستغفار...) التقديم هنا لغرض:",
+            options: ["الاختصاص", "التعظيم", "تعجيل المسرة", "التشويق"], correct: 3,
+            hint: "بدء الكلام برقم مجمل يجعلك تتساءل في ذهنك بفضول لتعرف الأسباب الأربعة كاملة."
+        },
+        {
+            level: "صعب", type: "التمييز الدقيق",
+            question: "في جملة (كتابَ البلاغةِ قرأتُ اليوم)، تقديم المفعول به يفيد:",
+            options: ["التعظيم", "الاختصاص", "التشويق", "تعجيل المسرة"], correct: 1,
+            hint: "التقديم قصر القراءة في هذا اليوم على كتاب البلاغة دون سواه من الكتب."
+        },
+        {
+            level: "صعب", type: "التمييز الدقيق",
+            question: "عند قولنا: (عالٍ مقامُ العلماء في المجتمع)، ما الفائدة البلاغية من التقديم؟",
+            options: ["التعظيم", "تعجيل المسرة", "التشويق", "الاختصاص"], correct: 0,
+            hint: "البدء بصفة العلو يرسخ في ذهن السامع مباشرة التوقير والرفعة لأهل العلم."
+        },
+        {
+            level: "صعب", type: "التمييز الدقيق",
+            question: "قولك لصديقك: (الجائزةُ الأولى فزتَ بها يا بطل). الغرض من التقديم:",
+            options: ["الاختصاص", "التشويق", "التعظيم", "تعجيل المسرة"], correct: 3,
+            hint: "رغم أن الفوز أمر عظيم، لكن الغرض النفسي المباشر هو إفراح الصديق ببشارته فوراً."
+        },
+        {
+            level: "صعب", type: "التمييز الدقيق",
+            question: "جملة: (تحت الركامِ حياةٌ نابضة تنتظر الإنقاذ)، الغرض البلاغي من التقديم:",
+            options: ["التشويق", "تعجيل المسرة", "التعظيم", "الاختصاص"], correct: 0,
+            hint: "البدء بوصف المكان الموحش يجعل السامع مترقباً ومتشوقاً لمعرفة ماذا يوجد هناك."
+        },
+        {
+            level: "صعب", type: "التمييز الدقيق",
+            question: "في قولنا: (شريفٌ مَن يصون عهد الأصدقاء)، تقديم كلمة (شريف) غرضه:",
+            options: ["الاختصاص", "التشويق", "تعجيل المسرة", "التعظيم"], correct: 3,
+            hint: "إعلاء خصلة الوفاء والثناء المباشر عليها بإبراز لفظ الشرف في صدر الكلام."
+        }
+    ];
+
+    // ============================================================
+    //  GAME LOGIC
+    // ============================================================
+    let orderedQuestions = [];
+    let currentIndex = 0;
+    let score = 0;
+    let canAnswer = false;
+
+    function shuffle(array) {
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex !== 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+        return array;
+    }
+
+    function showScreen(id) {
+        ['screen-home', 'screen-lesson', 'screen-game', 'screen-result', 'feedback-overlay'].forEach(s => {
+            document.getElementById(s).classList.add('hidden');
+        });
+        document.getElementById(id).classList.remove('hidden');
+    }
+
+    function startGame() {
+        const easy = shuffle(gameQuestions.filter(q => q.level === 'سهل'));
+        const medium = shuffle(gameQuestions.filter(q => q.level === 'متوسط'));
+        const hard = shuffle(gameQuestions.filter(q => q.level === 'صعب'));
+        
+        orderedQuestions = [...easy, ...medium, ...hard];
+        currentIndex = 0;
+        score = 0;
+        
+        document.getElementById('score-display').textContent = '0';
+        showScreen('screen-game');
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        canAnswer = true;
+        const q = orderedQuestions[currentIndex];
+        
+        document.getElementById('question-counter').textContent = currentIndex + 1;
+        document.getElementById('question-type-badge').textContent = q.type;
+        document.getElementById('question-text').textContent = q.question;
+        
+        const badge = document.getElementById('difficulty-badge');
+        badge.textContent = q.level;
+        badge.className = 'px-3 py-1 rounded-full text-xs font-bold';
+        if(q.level === 'سهل') badge.classList.add('badge-easy');
+        else if(q.level === 'متوسط') badge.classList.add('badge-medium');
+        else badge.classList.add('badge-hard');
+
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = '';
+        
+        q.options.forEach((opt, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'btn-hover-effect bg-black/40 border border-white/20 text-white p-4 rounded-xl text-lg font-bold hover:bg-white/10 transition-colors w-full';
+            btn.textContent = opt;
+            btn.onclick = () => checkAnswer(index, btn);
+            optionsContainer.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selectedIndex, btnElement) {
+        if (!canAnswer) return;
+        canAnswer = false;
+        
+        const q = orderedQuestions[currentIndex];
+        const isCorrect = (selectedIndex === q.correct);
+        const options = document.getElementById('options-container').children;
+
+        if (isCorrect) {
+            btnElement.classList.add('correct-bg');
+            playSound('correct');
+            score += (q.level === 'سهل' ? 10 : (q.level === 'متوسط' ? 20 : 30));
+            document.getElementById('score-display').textContent = score;
+            showFeedback(true, q.hint);
+        } else {
+            btnElement.classList.add('wrong-bg', 'shake');
+            options[q.correct].classList.add('correct-bg'); // إظهار الإجابة الصحيحة
+            playSound('wrong');
+            showFeedback(false, q.hint);
+        }
+    }
+
+    function showFeedback(isCorrect, hintText) {
+        setTimeout(() => {
+            document.getElementById('feedback-overlay').classList.remove('hidden');
+            const title = document.getElementById('feedback-title');
+            const icon = document.getElementById('feedback-icon');
+            const text = document.getElementById('feedback-text');
+
+            if (isCorrect) {
+                title.textContent = 'أحسنت! إجابة دقيقة';
+                title.className = 'text-4xl font-bold mb-4 text-green-400';
+                icon.textContent = '✨';
+            } else {
+                title.textContent = 'إجابة غير صحيحة';
+                title.className = 'text-4xl font-bold mb-4 text-red-400';
+                icon.textContent = '💡';
+            }
+            text.innerHTML = hintText;
+        }, 1000); // الانتظار ثانية قبل ظهور الشاشة
+    }
+
+    function nextQuestion() {
+        document.getElementById('feedback-overlay').classList.add('hidden');
+        currentIndex++;
+        if (currentIndex < orderedQuestions.length) {
+            loadQuestion();
+        } else {
+            endGame();
+        }
+    }
+
+    function endGame() {
+        playSound('win');
+        let maxScore = (5*10) + (5*20) + (10*30); // 450
+        document.getElementById('final-score').textContent = score + '/' + maxScore;
+        
+        const msg = document.getElementById('result-message');
+        const title = document.getElementById('result-title');
+        const emoji = document.getElementById('result-emoji');
+        
+        let currentTotal = parseInt(localStorage.getItem('bahaa_total_score')) || 0;
+        localStorage.setItem('bahaa_total_score', currentTotal + score);
+        document.getElementById('home-total-score').textContent = currentTotal + score;
+
+        if (score === maxScore) {
+            emoji.textContent = '👑';
+            title.textContent = 'بليغٌ عبقري!';
+            title.className = 'text-3xl font-bold mt-2 text-yellow-400';
+            msg.textContent = 'علامة كاملة! لديك حس بلاغي رفيع وذائقة لا تُخطئ في تذوق أسرار العربية.';
+        } else if (score >= maxScore * 0.7) {
+            emoji.textContent = '🌟';
+            title.textContent = 'أداء رائع!';
+            title.className = 'text-3xl font-bold mt-2 text-green-400';
+            msg.textContent = 'فهمك للأغراض البلاغية ممتاز جداً، اقتربت من الكمال في التذوق.';
+        } else if (score >= maxScore * 0.4) {
+            emoji.textContent = '👍';
+            title.textContent = 'أداء جيد';
+            title.className = 'text-3xl font-bold mt-2 text-blue-400';
+            msg.textContent = 'تحتاج لبعض المراجعة للتمييز الدقيق بين الأغراض، راجع القاعدة وحاول مجدداً!';
+        } else {
+            emoji.textContent = '📚';
+            title.textContent = 'لا تستسلم!';
+            title.className = 'text-3xl font-bold mt-2 text-gray-400';
+            msg.textContent = 'البلاغة تحتاج لمزيد من التأمل والممارسة. راجع شاشة الدرس قبل المحاولة القادمة.';
+        }
+        
+        showScreen('screen-result');
+    }
+    </script>
+</body>
+</html>
